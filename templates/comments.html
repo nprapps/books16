@@ -10,6 +10,9 @@
     <!-- CHARTBEAT -->
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
+    <!-- FONTS -->
+    {% include '_fonts.html' %}
+
     <!-- CSS -->
     {{ CSS.push('less/comments_full.less') }}
     {% block extra_css %}{% endblock extra_css %}
@@ -31,14 +34,14 @@
 
     {{ JS.push('js/lib/jquery.js') }}
     {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.push('js/lib/webfont.js') }}
     {{ JS.push('js/app_config.js') }}
+    {{ JS.push('js/console.js') }}
     {{ JS.push('js/comments.js') }}
     {{ JS.render('js/comments-footer.min.js') }}
 
     <script type="text/javascript">
         $(function() {
-            loadComments();
+            loadComments();  
         });
     </script>
 </body>

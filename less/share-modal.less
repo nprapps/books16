@@ -3,31 +3,15 @@
 @import "less/lib/prefixer";
 @import "less/comments.less";
 
-.modal-content {
-    background-color: #eee;
-
-    border-radius: 0;
-    .box-shadow(0 3px 3px rgba(0,0,0,.1));
+.modal-body.share{
+    padding:20px;
 }
-
-.modal-body {
-    overflow-x: hidden;
-
-    a {
-        color: #7a96cc;
-        &:hover,
-        &:focus {
-        color: #667ca9;
-        }
-    }
-}
-
 .email-friend {
     border-top: 1px solid #ddd;
-
+    
     h4 {
         margin: 20px 0 20px 0;
-
+        
         a {
             font-size: 12px;
             display: inline-block;
@@ -43,12 +27,12 @@
             color: #fff;
             }
         }
-
+        
         b {padding: 0 5px;}
-
+        
     }
-
-
+    
+    
 }
 
 //story summary
@@ -65,12 +49,12 @@
         -ms-user-select: none;
         user-select: none;
     }
-
+    
     p {
-
+        
         margin: 10px 0 20px 0;
     }
-
+    
     .summary-text {
         margin: 0;
         font-size: 11px;
@@ -80,12 +64,12 @@
         color: #555;
         display: block;
         font-weight: normal;
-        @media (min-width: @screen-sm-min) {
+        @media (min-width: @screen-sm) {
             display: inline-block;
             font-size: 12px;
         }
     }
-
+    
     .clippy {
         text-transform: uppercase;
         font-size: 12px;
@@ -103,8 +87,8 @@
         .touch & {
             display: none;
         }
-
-
+        
+        
     }
 }
 
@@ -125,31 +109,31 @@
 .share-section {
     border-top: 1px solid #ddd;
     padding: 25px 0 5px 0;
-
+    
     h4{
        text-transform: uppercase;
        font-size: 18px;
        margin: 0;
        font-weight: normal;
     }
-
-
+    
+    
     h5 {
         font-size: 14px;
         color: #333;
         text-transform: uppercase;
         margin: 30px 0 20px 0;
         font-weight: bold;
-        @media (min-width: @screen-md-min) {
+        @media (min-width: @screen-md) {
             //margin-left: 30px;
         }
     }
-
+    
     ul {
         list-style-type: none;
         padding-left: 0;
     }
-
+    
 }
 
 .share-story {
@@ -163,7 +147,7 @@
         padding: 10px;
         background-color: #7a96cc;
         color: #fff;
-
+        
         &:hover,
         &:focus {
         background-color: #bccae5;
@@ -178,20 +162,20 @@
 
 .facebook-share {
     margin: 0;
-
+    
     .facebook-post {
     position: relative;
     margin-top: 20px;
     padding: 5px;
     background-color: #fff;
     border-bottom: 2px solid #ddd;
-    @media (min-width: @screen-sm-min) {
+    @media (min-width: @screen-sm) {
         padding: 20px;
     }
-    @media (min-width: @screen-md-min) {
+    @media (min-width: @screen-md) {
         max-width: 700px;
     }
-
+    
         .facebook-author-avatar {
             float: left;
             max-width: 50px;
@@ -200,14 +184,14 @@
             margin: 0;
             text-align: center;
             text-transform: uppercase;
-
+            
             img {
                 width: 100%;
                 border: 1px solid #eee;
                 display: block;
                 margin-bottom: 5px;
             }
-
+            
             a {
                 color: #999;
                 &:hover,
@@ -217,20 +201,20 @@
                 }
             }
         }
-
+        
         .facebook-content {
             position: relative;
             margin-left: 70px;
-
-            @media (min-width: @screen-md-min) {
+            
+            @media (min-width: @screen-md) {
                 margin-left: 90px;
             }
-
+    
             .facebook-author-name {
                 font-size: 11px;
-                font-weight: bold;
+                font-weight: bold; 
                 margin: 0;
-                @media screen and (min-width: @screen-md-min) {
+                @media screen and (min-width: @screen-md) {
                     font-size: 14px;
                 }
                 a {
@@ -240,52 +224,52 @@
                     &:focus {
                         color: #000;
                     }
-                }
+                }         
             }
-
+            
             .facebook-message {
                 font-size: 12px;
                 max-width: 600px;
-                @media screen and (min-width: @screen-sm-min) {
+                @media screen and (min-width: @screen-sm) {
                     font-size: 14px;
                 }
-
+                
             }
-
+            
             .facebook-shared-entity {
                 background-color: #efefef;
                 border: 1px solid #e3e3e3;
                 padding: 10px;
-                @media screen and (min-width: @screen-md-min) {
+                @media screen and (min-width: @screen-md) {
                     padding: 20px;
                 }
-
+                
                 p {
-
+                    
                     max-width: 350px;
                     font-size: 12px;
                     color: #444;
                     margin: 0 0 10px 0;
-                    @media screen and (min-width: @screen-sm-min) {
+                    @media screen and (min-width: @screen-sm) {
                         float: left;
                         padding: 20px;
                     }
-                    @media screen and (min-width: @screen-md-min) {
+                    @media screen and (min-width: @screen-md) {
                         max-width: 500px;
                         font-size: 14px;
                     }
                 }
-
+            
                 img {
                     max-width: 120px;
-                    @media screen and (min-width: @screen-sm-min) {
+                    @media screen and (min-width: @screen-sm) {
                         float: right;
                     }
                 }
             }
-
+            
         }//fb content
-
+        
         .facebook-meta {
             .facebook-actions {
                 margin: 20px 0 0 0;
@@ -293,37 +277,37 @@
                 font-size: 10px;
                 text-transform: uppercase;
                 position: relative;
-
-                @media (min-width: @screen-sm-min) {
+                
+                @media (min-width: @screen-sm) {
                     font-size: 12px;
                     text-align: right;
-
+                    
                 }
-
+                
                 .facebook-view {
                     font-weight: bold;
                     text-decoration: none;
                     position: absolute;
                     top: 0;
                     right: 0;
-                    @media (min-width: @screen-sm-min) {
+                    @media (min-width: @screen-sm) {
                         position: static;
                     }
                 }
-
-
-
+                
+                
+                
                 span {
                     margin-right: 5px;
-                    @media (min-width: @screen-sm-min) {
+                    @media (min-width: @screen-sm) {
                         margin-right: 20px;
                     }
                 }
             }
         }//fb meta
-
+        
     }// fb post
-
+    
 }//facebook share
 
 
@@ -338,15 +322,15 @@
         background-color: #fff;
         overflow: hidden;
         border-bottom: 2px solid #ddd;
-        @media (min-width: @screen-sm-min) {
+        @media (min-width: @screen-sm) {
           margin-top: 20px;
           padding: 20px;
         }
-        @media (min-width: @screen-md-min) {
+        @media (min-width: @screen-md) {
           max-width: 700px;
         }
-
-
+        
+        
         .follow-author {
                 float: left;
                 max-width: 50px;
@@ -355,11 +339,11 @@
                 margin: 0;
                 text-align: center;
                 text-transform: uppercase;
-                @media (min-width: @screen-sm-min) {
+                @media (min-width: @screen-sm) {
                   margin-top: 10px;
                 }
-
-
+                
+                
                 a {
                     color: #999;
                     text-decoration: none;
@@ -369,7 +353,7 @@
                     text-decoration: none;
                     }
                 }
-
+                
                 .tweet-author-avatar {
                     width: 100%;
                     border: 1px solid #eee;
@@ -377,26 +361,26 @@
                     margin-bottom: 5px;
                 }
             }
-
-
+            
+            
 
         .tweet-content {
             margin-left: 60px;
             position: relative;
-
-            @media (min-width: @screen-md-min) {
+            
+            @media (min-width: @screen-md) {
               margin-left: 70px;
             }
-            @media (min-width: @screen-md-min) {
+            @media (min-width: @screen-md) {
               margin-left: 90px;
             }
-
+            
             .tweet-timestamp {
                 font-size: 10px;
                 margin: 0 0 10px 0;
                 line-height: 1;
-
-                @media (min-width: @screen-sm-min) {
+                
+                @media (min-width: @screen-sm) {
                     position: absolute;
                     top: 5px;
                     right: 0;
@@ -405,16 +389,16 @@
                 }
                 a {color: #aaa;}
             }
-
+            
             .tweet-author {
                 line-height: 1;
                 margin-bottom: 0;
-
-                @media (min-width: @screen-sm-min) {
+                
+                @media (min-width: @screen-sm) {
                     padding-top: 5px;
                     margin-bottom: 15px;
                 }
-
+                
                 a {
                     color: #666;
                     text-decoration: none;
@@ -424,113 +408,113 @@
                     }
                 }
             }
-
+            
             .tweet-author-name {
                 font-size: 11px;
                 font-weight: bold;
                 padding-right: 5px;
-                @media (min-width: @screen-md-min) {
+                @media (min-width: @screen-md) {
                     font-size: 14px;
                 }
-
+                
             }
-
+            
             .tweet-author-username {
                 font-size: 10px;
                 margin-bottom: 5px;
                 display: block;
-                @media (min-width: @screen-sm-min) {
+                @media (min-width: @screen-sm) {
                     display: inline-block;
                 }
-                @media (min-width: @screen-md-min) {
+                @media (min-width: @screen-md) {
                     font-size: 11px;
                 }
             }
             .tweet-text {
                 font-size: 12px;
-                @media screen and (min-width: @screen-sm-min) {
+                @media screen and (min-width: @screen-sm) {
                     font-size: 14px;
                 }
-
+                
                 a {
                     color: #333;
                     font-weight: bold;
-
+                    
                 }
             }
-
+            
             .tweet-photo {
                 max-width: 200px;
                 max-height: 200px;
                 overflow: hidden;
                 text-align: right;
-
-                @media screen and (min-width: @screen-sm-min) {
+                
+                @media screen and (min-width: @screen-sm) {
                     float: right;
                     margin: 0 0 0 20px;
                     max-width: 150px;
                     max-height: 150px;
                 }
-
-                @media screen and (min-width: @screen-md-min) {
+                
+                @media screen and (min-width: @screen-md) {
                     margin: 0 0 0 50px;
                 }
-
+                
                 img {
                     width: 100%;
-
+                    
                 }
             }
         }//tweet-content
-
+        
         .tweet-meta {
             text-transform: uppercase;
             margin: 0;
-            @media (min-width: @screen-sm-min) {
+            @media (min-width: @screen-sm) {
               margin: 10px 0 0 70px;
             }
-
-            @media (min-width: @screen-sm-min) {
+            
+            @media (min-width: @screen-sm) {
               margin-left: 90px;
             }
-
-
+            
+            
             .tweet-actions {
                 position: relative;
                 margin: 0;
-
+                
                 a {
                     padding-right: 20px;
                     font-size: 10px;
                     text-decoration: none;
-                    font-weight: bold;
-                    @media (min-width: @screen-sm-min) {
+                    font-weight: bold; 
+                    @media (min-width: @screen-sm) {
                       font-size: 12px;
                     }
                 }
-
+                
                 .view-on-twitter {
                     position: absolute;
                     top: 0;
                     right: 0;
                     padding-right: 0;
-                    @media (min-width: @screen-sm-min) {
+                    @media (min-width: @screen-sm) {
                       top: 10px;
                     }
                 }
-
+                
                 i {
                     font-size: 18px;
                     margin-right: 10px;
-                    @media (min-width: @screen-sm-min) {
+                    @media (min-width: @screen-sm) {
                       font-size: 12px;
                       margin-right: 0;
                     }
                 }
-
+                
                 b {
                     display: none;
-                    @media (min-width: @screen-sm-min) {
+                    @media (min-width: @screen-sm) {
                       display: inline-block;
                     }
                 }
@@ -541,34 +525,38 @@
 
  #share-modal {
     color: #444;
-
+    
     .close {
         background-color: #111;
         padding: 5px;
-
     }
-
+    
     .share-close {
-      float: right;
-      font-size: 14px;
+        position:absolute;
+        top:5px;
+        right:5px;
+      // float: right;
+      font-size: 18px;
       line-height: 1;
-      color: #eee;
-      background-color: #000;
+      color: white;
+      background-color: black;
       border: none;
       text-transform: uppercase;
-      margin: -16px -16px 0 0;
+      // margin: 3px 2px 13px 0;
       padding: 4px 6px 6px 6px;
-      @media (min-width: @screen-sm-min) {
+        &:hover{
+            background-color: lighten(@red, 20%);
+        }
+      @media (min-width: @screen-sm) {
           padding: 8px 10px 10px 10px;
         }
-
+    
       &:hover,
       &:focus {
-        color: #fff;
         text-decoration: none;
         cursor: pointer;
       }
-
+    
       button& {
         padding: 0;
         cursor: pointer;
@@ -576,22 +564,17 @@
         border: 0;
         -webkit-appearance: none;
       }
-
+      
       em {
         font-style: normal;
-        font-size: 10px;
+        font-size: 13px;
       }
     }
 }
 
-// Scale up the modal
-@media screen and (min-width: @screen-sm-min) {
-
-}
-
-@media (min-width: @screen-md-min) {
+@media (min-width: @screen-md) {
     .modal-lg {
-        width: 700px;
+        width: 700px; 
     }
 }
 
