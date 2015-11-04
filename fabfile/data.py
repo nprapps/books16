@@ -464,7 +464,7 @@ def load_images():
             print u'LOG (%s): Image not available from Baker and Taylor, using NPR book page' % book['title']
             url = 'http://www.npr.org/%s' % book['book_seamus_id']
             npr_r = requests.get(url)
-            soup = BeautifulSoup(npr_r.content)
+            soup = BeautifulSoup(npr_r.content, 'html.parser')
             try:
                 if book['title'] == 'The Three-Body Problem':
                     alt_img_url = 'http://media.npr.org/assets/bakertaylor/covers/t/the-three-body-problem/9780765377067_custom-d83e0e334f348e6c52fe5da588ec3448921af64f-s600-c85.jpg'
