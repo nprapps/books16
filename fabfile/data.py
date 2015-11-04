@@ -1,24 +1,48 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 Commands that update or process the application data.
 """
-from datetime import datetime
+import app_config
+import codecs
+import copytext
+import csv
 import json
+import locale
+import os
+import re
+import requests
+import sys
+import xlrd
 
+# Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
+sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+
+from PIL import Image
+from bs4 import BeautifulSoup
+from datetime import datetime
 from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
 
-import app_config
-import copytext
+TAGS_TO_SLUGS = {}
+SLUGS_TO_TAGS = {}
+
+# Promotion image constants
+IMAGE_COLUMNS = 20
+TOTAL_IMAGES = 160
+PROMOTION_IMAGE_WIDTH = 1200
 
 @task(default=True)
 def update():
     """
-    Stub function for updating app-specific data.
+    Load books and covers
     """
-    #update_featured_social()
+    update_featured_social()
+    load_books()
+    load_images()
+    make_promotion_thumb()
 
 @task
 def update_featured_social():
@@ -160,3 +184,345 @@ def update_featured_social():
 
     with open('data/featured.json', 'w') as f:
         json.dump(output, f)
+
+class Book(object):
+    """
+    A single book instance.
+    __init__ cleans the data.
+    """
+    isbn = None
+    isbn13 = None
+    hide_ibooks = False
+    title = None
+    author = None
+    genre = None
+    reviewer = None
+    text = None
+    slug = None
+    tags = None
+    book_seamus_id = None
+
+    author_seamus_id = None
+    author_seamus_headline = None
+
+    review_seamus_id = None
+    review_seamus_headline = None
+
+    def __unicode__(self):
+        """
+        Returns a pretty value.
+        """
+        return self.title
+
+    def __init__(self, **kwargs):
+        """
+        Process all fields for row in the spreadsheet for serialization
+        """
+        self.title = self._process_text(kwargs['title'])
+        print u'Processing %s' % self.title
+        self.book_seamus_id = kwargs['book_seamus_id']
+        self.slug = self._slugify(kwargs['title'])
+
+        self.author = self._process_text(kwargs['author'])
+        self.hide_ibooks = kwargs['hide_ibooks']
+        self.text = self._process_text(kwargs['text'])
+        self.reviewer = self._process_text(kwargs['reviewer'])
+        self.reviewer_id = self._process_text(kwargs['reviewer ID'])
+        self.reviewer_link = self._process_text(kwargs['reviewer link'])
+
+        self.isbn = self._process_text(kwargs['isbn'])
+        if self.isbn:
+            self.isbn13 = self._process_isbn13(self.isbn)
+        else:
+            print u'ERROR (%s): No ISBN' % self.title
+
+        self.oclc = self._process_text(kwargs['oclc'])
+        self.links = self._process_links(kwargs['book_seamus_id'])
+        self.tags = self._process_tags(kwargs['tags'])
+
+    def _process_text(self, value):
+        """
+        Clean text field by replacing smart quotes and removing extra spaces
+        """
+        value = value.replace('“','"').replace('”','"')
+        value = value.replace('’', "'")
+        value = value.strip()
+        return unicode(value.decode('utf8'))
+
+    def _process_tags(self, value):
+        """
+        Turn comma separated string of tags into list
+        """
+        item_list = []
+
+        for item in value.split(','):
+            if item != '':
+                # Clean.
+                item = self._process_text(item).replace(' and ', ' & ')
+
+                # Look up from our map.
+                tag_slug = TAGS_TO_SLUGS.get(item.lower(), None)
+
+                # Append if the tag exists.
+                if tag_slug:
+                    item_list.append(tag_slug)
+                else:
+                    print u'ERROR (%s): Unknown tag "%s"' % (self.title, item)
+
+        # Sort items by order in spreadsheet
+        copy = copytext.Copy(app_config.COPY_PATH)
+
+        ordered_items = []
+        slugs = [tag['key'].__str__() for tag in copy['tags']]
+
+        # Add slugs to new list in order from tags spreadsheet, not input order
+        for slug in slugs:
+            if slug in item_list:
+                ordered_items.append(slug)
+
+        return ordered_items
+
+    def _process_links(self, value):
+        """
+        Get links for a book from NPR.org book page
+        """
+        url = 'http://www.npr.org/%s' % value
+        print 'LOG (%s): Getting links from %s' % (self.title, url)
+        r = requests.get(url)
+        soup = BeautifulSoup(r.content, 'html.parser')
+        items = soup.select('.storylist article')
+        item_list = []
+        urls = []
+        for item in items:
+            link = {
+                'category': '',
+                'title': item.select('.title')[0].text.strip(),
+                'url': item.select('.title a')[0].attrs.get('href'),
+            }
+            if link['url'] not in urls:
+                category_elements = item.select('.slug')
+                if len(category_elements):
+                    category = category_elements[0].text.strip()
+                    if category in app_config.LINK_CATEGORY_MAP.keys():
+                        link['category'] = app_config.LINK_CATEGORY_MAP.get(category)
+                    else:
+                        link['category'] = app_config.LINK_CATEGORY_DEFAULT
+
+                urls.append(link['url'])
+                item_list.append(link)
+                print u'LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url'])
+            else:
+                print u'LOG (%s): Duplicate link %s on %s' % (self.title, link['title'], link['url'])
+
+        return item_list
+
+    def _process_isbn13(self, value):
+        """
+        Calculate ISBN-13, see: http://www.ehow.com/how_5928497_convert-10-digit-isbn-13.html
+        """
+        if value.startswith('978'):
+            return value
+        else:
+            isbn = '978%s' % value[:9]
+            sum_even = 3 * sum(map(int, [isbn[1], isbn[3], isbn[5], isbn[7], isbn[9], isbn[11]]))
+            sum_odd = sum(map(int, [isbn[0], isbn[2], isbn[4], isbn[6], isbn[8], isbn[10]]))
+            remainder = (sum_even + sum_odd) % 10
+            check = 10 - remainder if remainder else 0
+            isbn13 = '%s%s' % (isbn, check)
+            return isbn13
+
+    def _slugify(self, value):
+        """
+        Slugify book title
+        """
+        slug = value.strip().lower()
+        slug = re.sub(r"[^\w\s]", '', slug)
+        slug = re.sub(r"\s+", '-', slug)
+        slug = slug[:254]
+        return slug
+
+
+def get_books_csv():
+    """
+    Downloads the books CSV from google docs.
+    """
+    csv_url = "https://docs.google.com/spreadsheet/pub?key=%s&single=true&gid=0&output=csv" % (
+        app_config.DATA_GOOGLE_DOC_KEY)
+    r = requests.get(csv_url)
+
+    with open('data/books.csv', 'wb') as writefile:
+        writefile.write(r.content)
+
+def get_tags():
+    """
+    Extract tags from COPY doc.
+    """
+    print 'Extracting tags from COPY'
+
+    book = xlrd.open_workbook(app_config.COPY_PATH)
+
+    sheet = book.sheet_by_name('tags')
+
+    for i in range(1, sheet.nrows):
+        slug, tag = sheet.row_values(i)
+
+        slug = slug.strip()
+        tag = tag.replace(u'’', "'").strip()
+
+        SLUGS_TO_TAGS[slug] = tag
+        TAGS_TO_SLUGS[tag.lower()] = slug
+
+def parse_books_csv():
+    """
+    Parses the books CSV to JSON.
+    Creates book objects which are cleaned and then serialized to JSON.
+    """
+    get_tags()
+
+    # Open the CSV.
+    with open('data/books.csv', 'rb') as readfile:
+        books = list(csv.DictReader(readfile))
+
+    print "Start parse_books_csv(): %i rows." % len(books)
+
+    book_list = []
+
+    for book in books:
+
+        # Skip books with no title or ISBN
+        if book['title'] == "":
+            continue
+
+        if book['isbn'] == "":
+            continue
+
+        # Init a book class, passing our data as kwargs.
+        # The class constructor handles cleaning of the data.
+        b = Book(**book)
+
+        # Grab the dictionary representation of a book.
+        book_list.append(b.__dict__)
+
+    # Dump the list to JSON.
+    with open('www/static-data/books.json', 'wb') as writefile:
+        writefile.write(json.dumps(book_list))
+
+    print "End."
+
+@task
+def load_books():
+    """
+    Loads/reloads just the book data.
+    Does not save image files.
+    """
+    get_books_csv()
+    parse_books_csv()
+
+@task
+def load_images():
+    """
+    Downloads images from Baker and Taylor.
+    Eschews the API for a magic URL pattern, which is faster.
+    """
+
+    # Secrets.
+    secrets = app_config.get_secrets()
+
+    # Open the books JSON.
+    with open('www/static-data/books.json', 'rb') as readfile:
+        books = json.loads(readfile.read())
+
+    print "Start load_images(): %i books." % len(books)
+
+    # Loop.
+    for book in books:
+
+        # Skip books with no title or ISBN.
+        if book['title'] == "":
+            continue
+
+        if 'isbn' not in book or book['isbn'] == "":
+            continue
+
+        # Construct the URL with secrets and the ISBN.
+        book_url = "http://imagesa.btol.com/ContentCafe/Jacket.aspx?UserID=%s&Password=%s&Return=T&Type=L&Value=%s" % (
+            secrets['BAKER_TAYLOR_USERID'],
+            secrets['BAKER_TAYLOR_PASSWORD'],
+            book['isbn'])
+
+        # Request the image.
+        r = requests.get(book_url)
+
+        path = 'www/assets/cover/%s.jpg' % book['slug']
+
+        # Write the image to www using the slug as the filename.
+        with open(path, 'wb') as writefile:
+            writefile.write(r.content)
+
+        file_size = os.path.getsize(path)
+        if file_size < 10000:
+            print u'LOG (%s): Image not available from Baker and Taylor, using NPR book page' % book['title']
+            url = 'http://www.npr.org/%s' % book['book_seamus_id']
+            npr_r = requests.get(url)
+            soup = BeautifulSoup(npr_r.content)
+            try:
+                if book['title'] == 'The Three-Body Problem':
+                    alt_img_url = 'http://media.npr.org/assets/bakertaylor/covers/t/the-three-body-problem/9780765377067_custom-d83e0e334f348e6c52fe5da588ec3448921af64f-s600-c85.jpg'
+                else:
+                    alt_img_url = soup.select('.bookedition .image img')[0].attrs.get('src').replace('s99', 's400')
+                print 'LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url)
+                alt_img_resp = requests.get(alt_img_url)
+                with open(path, 'wb') as writefile:
+                    writefile.write(alt_img_resp.content)
+            except IndexError:
+                print u'ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url)
+
+        image = Image.open(path)
+        image.save(path, optimize=True, quality=75)
+
+    print "End."
+
+@task
+def make_promotion_thumb():
+    images_per_column = TOTAL_IMAGES / IMAGE_COLUMNS
+    image_width = PROMOTION_IMAGE_WIDTH / IMAGE_COLUMNS
+    max_height = int(image_width * images_per_column * 1.5)
+    thumb_size = [image_width, image_width]
+
+    image = Image.new('RGB', [PROMOTION_IMAGE_WIDTH, max_height])
+
+    # Open the books JSON.
+    with open('www/static-data/books.json', 'rb') as readfile:
+        books = json.loads(readfile.read())
+
+    coordinates = [0, 0]
+    last_y = 0
+    total_height = 0
+    min_height = None
+    column_multiplier = 0
+
+    for i, book in enumerate(books[:TOTAL_IMAGES]):
+        if i % images_per_column == 0:
+            if not min_height or total_height < min_height:
+                min_height = total_height
+            coordinates[0] = column_multiplier * image_width
+            coordinates[1] = 0
+            last_y = 0
+            column_multiplier +=1
+            total_height = 0
+
+        path = 'www/assets/cover/%s.jpg' % book['slug']
+        book_image = Image.open(path)
+        width, height = book_image.size
+        ratio = width / float(image_width)
+        new_height = int(height / ratio)
+        resized = book_image.resize((image_width, new_height), Image.ANTIALIAS)
+        coordinates[1] = coordinates[1] + last_y
+        image.paste(resized, tuple(coordinates))
+        last_y = new_height
+        total_height += new_height
+
+    final_width = int(min_height * 1.91)
+    cropped = image.crop((0, 0, final_width, min_height))
+
+    cropped.save('www/assets/img/covers.jpg')

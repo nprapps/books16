@@ -94,6 +94,14 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1iV3gN-3S7W_0_R8GqJ-jYKDsbW2AOafoc3kZB59bIPE'
 COPY_PATH = 'data/copy.xlsx'
 
+DATA_GOOGLE_DOC_KEY = '1uY_0zU7wAa1TLYGC4yGJZUamLulRTJZiwKWmiHZ73qU'
+
+LINK_CATEGORY_MAP = {
+    'Author Interviews': 'Interview',
+    'Book Reviews': 'Review',
+}
+LINK_CATEGORY_DEFAULT = 'Feature'
+
 """
 SHARING
 """
