@@ -486,11 +486,17 @@ $(function() {
     $header = $('#top');
     window.BOOKS = _.shuffle(window.BOOKS);
     _.each(window.BOOKS, function(book, i) {
-        var book_content = window.JST["book_grid_item"]({
+        var book_grid_content = window.JST["book_grid_item"]({
             book: book, 
             loop_index: i
         });
-        $books_grid.append(book_content);
+        $books_grid.append(book_grid_content);
+
+        var book_list_content = window.JST["book_list_item"]({
+            book: book, 
+            loop_index: i
+        });
+        $books_list.append(book_list_content);
     });
 
     // Event handlers.

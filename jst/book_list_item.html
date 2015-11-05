@@ -1,0 +1,7 @@
+
+<li class="visible <% _.each(book.tags, function(tag) { %>tag-<%= tag %> <% }) %> <%= book.slug %>" data-sort="<%= loop_index %>" data-slug="<%= book.slug %>">
+    <a href="#/book/<%=  book.slug %>">
+        <span class="title"><%= book.title %></span><br />
+        <span class="author">by&nbsp;<%= book.author %></span>
+    </a><br />
+</li>
