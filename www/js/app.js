@@ -484,6 +484,14 @@ $(function() {
     $share_modal = $('#share-modal');
     $large_ad = $('#largeVersion');
     $header = $('#top');
+    window.BOOKS = _.shuffle(window.BOOKS);
+    _.each(window.BOOKS, function(book, i) {
+        var book_content = window.JST["book_grid_item"]({
+            book: book, 
+            loop_index: i
+        });
+        $books_grid.append(book_content);
+    });
 
     // Event handlers.
     $body.on('click', '.filter .tag', on_tag_clicked);
