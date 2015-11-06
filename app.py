@@ -97,6 +97,29 @@ def index():
 
     return make_response(render_template('index.html', **context))
 
+
+@app.route('/share/<slug>.html')
+def share(slug):
+    featured_book = None
+    context = make_context()
+    with open('www/static-data/books.json', 'rb') as f:
+        books = json.load(f)
+        for book in books:
+            if book.get('slug') == slug:
+                featured_book = book
+                break
+
+    if not featured_book:
+        return 404
+
+    featured_book['teaser'] = _make_teaser(featured_book)
+    featured_book['thumb'] = "%sassets/cover/%s.jpg" % (context['SHARE_URL'], featured_book['slug'])
+
+    context['twitter_handle'] = 'nprbooks'
+    context['book'] = featured_book
+
+    return make_response(render_template('share.html', **context))
+
 @app.route('/comments/')
 def comments():
     """

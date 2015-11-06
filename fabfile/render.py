@@ -10,6 +10,7 @@ import os
 from fabric.api import local, task
 
 import app
+import json
 
 def _fake_context(path):
     """
@@ -132,12 +133,33 @@ def render_all():
 
             view = _view_from_name(name)
 
-            content = view().data
+            if rule_string.startswith('/share'):
+                with open('www/static-data/books.json', 'rb') as readfile:
+                    books = json.load(readfile)
 
-            compiled_includes = g.compiled_includes
+                for book in books:
+                    filename = 'www/share/%s.html' % book['slug']
+                    print "will make %s" % filename
+                    dirname = os.path.dirname(filename)
 
-        # Write rendered view
-        # NB: Flask response object has utf-8 encoded the data
-        with open(filename, 'w') as f:
-            f.write(content)
+                    if not (os.path.exists(dirname)):
+                        os.makedirs(dirname)
+
+                    content = view(book['slug']).data
+
+                    compiled_includes = g.compiled_includes
+
+                    # Write rendered view
+                    # NB: Flask response object has utf-8 encoded the data
+                    with open(filename, 'w') as f:
+                        f.write(content)
+            else: 
+                content = view().data
+
+                compiled_includes = g.compiled_includes
+
+                # Write rendered view
+                # NB: Flask response object has utf-8 encoded the data
+                with open(filename, 'w') as f:
+                    f.write(content)
 
