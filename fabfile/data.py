@@ -42,7 +42,7 @@ def update():
     update_featured_social()
     load_books()
     load_images()
-    make_promotion_thumb()
+    #make_promotion_thumb()
 
 @task
 def update_featured_social():
