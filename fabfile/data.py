@@ -445,13 +445,18 @@ def load_images():
             continue
 
         # Construct the URL with secrets and the ISBN.
-        book_url = "http://imagesa.btol.com/ContentCafe/Jacket.aspx?UserID=%s&Password=%s&Return=T&Type=L&Value=%s" % (
-            secrets['BAKER_TAYLOR_USERID'],
-            secrets['BAKER_TAYLOR_PASSWORD'],
-            book['isbn'])
+        book_url = "http://imagesa.btol.com/ContentCafe/Jacket.aspx"
+
+        params = {
+            'UserID': secrets['BAKER_TAYLOR_USERID'],
+            'Password': secrets['BAKER_TAYLOR_PASSWORD'],
+            'Value': book['isbn'],
+            'Return': 'T',
+            'Type': 'L'
+        }
 
         # Request the image.
-        r = requests.get(book_url)
+        r = requests.get(book_url, params=params)
 
         path = 'www/assets/cover/%s.jpg' % book['slug']
 
