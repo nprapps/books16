@@ -13,7 +13,7 @@ Flask==0.9
 google-api-python-client==1.2
 gunicorn==19.1.1
 httplib2==0.9
-jdcal==1.0
+jdcal==1.2
 Jinja2==2.7.3
 jmespath==0.2.1
 MarkupSafe==0.23
