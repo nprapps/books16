@@ -170,17 +170,17 @@ header {
     // padding: 30px @grid-gutter-width / 2;
     // background: #f5f5f5;
     //background: @header;
-    background: @green7;
+    background: @wintergreen4 url('../assets/books-header.png');
     width: 100%;
     padding-top: 5px;
     padding-bottom: 40px;
-    border-bottom: 7px solid @green6;
+    border-bottom: 3px solid @wintergreen3;
     @media screen and (max-width: @screen-sm) {
         padding-bottom: 30px;
     }
 
     h1 {
-        font-size: 44px;
+        font-size: 55px;
         font-weight: bold;
         font-family: @font-family-sans-serif;
         margin-bottom: @line-height-computed / 2;
@@ -189,7 +189,7 @@ header {
         margin-left: 0;
     }
     h2 {
-        font-size: 32px;
+        font-size: 38px;
         font-weight: normal;
         font-family: @font-family-sans-serif;
         margin-bottom: @line-height-computed;
@@ -230,15 +230,14 @@ header {
     .share{
         border:none;
         font-size: 13px;
-        color: #fff;
-        background-color: rgba(255, 255, 255, .2);
+        color: @wintergreen4;
+        background-color: #e2f5f5;
         margin:0;
         margin-top: 20px;
 
         &:hover{
             background-color: #fff;
-            //border:1px solid white;
-            color: @green6;
+            color: @wintergreen4;
         }
 
         @media screen and (min-width: @screen-sm){
@@ -263,7 +262,7 @@ header {
 
         .header-wrapper {
             width: 100%;
-            max-width:700px;
+            max-width:1200px;
         }
     }
 
@@ -282,7 +281,7 @@ header {
     }
     @media screen and (max-width: 1299px)and(min-width: 1100px){
         .header-wrapper{
-            width:560px;
+            //width:560px;
             z-index:100;
         }
     }
@@ -338,30 +337,17 @@ header {
 h1 + #story-meta { margin-top: -11px; }
 
 .toggle-text {
-    // margin: 0 0 @line-height-computed;
-    display:inline-block;
+    position: absolute;
+    top: 25px;
+    right: 5px;
 
-
-    @media screen and (max-width: @screen-xs-max) {
-        margin-bottom: 20px;
-        margin-top: 20px;
-        float: right;
-        // width:50%;
-        // margin-left;
-        // margin-left: 11px;
-        .clearfix;
-    }
-
-    @media screen and (min-width: @screen-sm) {
-        float: right;
-        // margin-top: 30px;
-        margin-left: 10px;
-        padding-right: 5px;
+    @media screen and (max-width: @screen-sm) {
+        position: static;
     }
 
     .btn.btn-default {
         margin: 0;
-        color: @green7;
+        color: @wintergreen4;
         font-size: 14px;
         border-radius: 0px;
         @media screen and (min-width: 480px) {
@@ -371,9 +357,9 @@ h1 + #story-meta { margin-top: -11px; }
 
     &.grid-active .btn.btn-default.grid,
     &.list-active .btn.btn-default.list {
-        background: @green7;
+        background: @wintergreen4;
         color: #fff;
-        border-color: @green7;
+        border-color: @wintergreen4;
         border-radius: 0px;
 
     }
@@ -1023,6 +1009,15 @@ h1 + #story-meta { margin-top: -11px; }
     color:@gray-medium;
     margin:0;
     padding: 0;
+    line-height: 1.5;
+
+    @media screen and (max-width: @screen-md){
+        max-width: 250px;
+    }
+
+    @media screen and (max-width: @screen-sm){
+        max-width: 100%;
+    }
 
     #tag-span {
         font-style: italic;
