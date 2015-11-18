@@ -1089,6 +1089,7 @@ h1 + #story-meta { margin-top: -11px; }
 .modal-book-cover {
     float: left;
     width:28%;
+    margin-top: 5px;
 }
 .modal-book-cover img {
     width: 100%;
@@ -1623,6 +1624,7 @@ footer {
     }
     .modal-book-cover{
         width:20%;
+
     }
 }
 
@@ -1637,16 +1639,27 @@ footer {
         .secondary li { font-size: 9px; text-transform: none; }
         .secondary a { color: #bccae5; }
     }
-    .modal-book-cover img{
-        width: 250px;
-        max-width: 100%;
+
+    .modal-book-cover {
+        margin-top: 0;
+
+        img{
+            width: 250px;
+            max-width: 100%;
+            }
     }
 
     .modal-text{
         margin-left:0;
         padding-left:0;
-    }
 
+        .modal-title {
+            font-size: 19px;
+            line-height: 1.1;
+            margin-bottom: 5px;
+        }
+    }
+    
 
 }
 @media (max-width: 480px) {
@@ -1669,11 +1682,7 @@ footer {
     }
 
     .modal-text {
-        .modal-title {
-            font-size: 19px;
-            line-height: 1.1;
-            margin-bottom: 5px;
-        }
+
     }
 
     .text {
