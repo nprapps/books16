@@ -31,7 +31,7 @@ books15
 What is this?
 -------------
 
-**TKTK: Describe books15 here.**
+2015 book concierge.
 
 Assumptions
 -----------
