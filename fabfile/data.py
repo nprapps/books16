@@ -387,6 +387,8 @@ def parse_books_csv():
 
     book_list = []
 
+    tags = {}
+
     for book in books:
 
         # Skip books with no title or ISBN
@@ -400,12 +402,24 @@ def parse_books_csv():
         # The class constructor handles cleaning of the data.
         b = Book(**book)
 
+        for tag in b.tags:
+            if not tags.get(tag):
+                tags[tag] = 1
+            else:
+                tags[tag] += 1
+
         # Grab the dictionary representation of a book.
         book_list.append(b.__dict__)
 
     # Dump the list to JSON.
     with open('www/static-data/books.json', 'wb') as writefile:
         writefile.write(json.dumps(book_list))
+
+    with open('data/tag-audit.csv', 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(['tag', 'slug', 'count'])
+        for slug, count in tags.items():
+            writer.writerow([slug, SLUGS_TO_TAGS[slug], count])
 
     print "End."
 
