@@ -217,7 +217,7 @@ var on_modal_tag_clicked = function() {
  */
 var on_clear_tags_clicked = function() {
     hasher.setHash('_');
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'clear-tags']);
+    ANALYTICS.trackEvent('clear-tags');
     return false;
 };
 
@@ -340,13 +340,13 @@ var on_hash_changed = function(new_hash, old_hash) {
         $modal.modal('hide');
         on_tag_hash(hash_slug);
         selected_tags.sort();
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'selected-tags', selected_tags.join(',')]);
+        ANALYTICS.trackEvent('selected-tags', selected_tags.join(','));
     } else if (hash_type == 'book') {
         on_book_hash(hash_slug);
         $modal.show().css('overflow-y','hidden').scrollTop(0).css('overflow-y','scroll');
 
         if (new_hash != '') {
-            _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'view-review', hash_slug]);
+            ANALYTICS.trackEvent('view-review', hash_slug);
         }
 
         // On first load, we need to load in the books. #142
@@ -417,19 +417,19 @@ var toggle_books_list = function() {
     $toggle_text.toggleClass('grid-active list-active');
 
     if ($books_grid.is(':visible')) {
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'toggle-view', 'grid']);
+        ANALYTICS.trackEvent('toggle-view', 'grid');
         filter_books();
     } else {
-        _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'toggle-view', 'list']);
+        ANALYTICS.trackEvent('toggle-view', 'list');
     }
 };
 
 var on_next = function() {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'navigate', 'next']);
+    ANALYTICS.trackEvent('navigate', 'next');
 }
 
 var on_previous = function() {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'navigate', 'previous']);
+    ANALYTICS.trackEvent('navigate', 'previous');
 }
 
 var on_keypress = function (e) {
@@ -445,11 +445,11 @@ var on_keypress = function (e) {
 }
 
 var on_show_share = function() {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'open-share-discuss']);
+    ANALYTICS.trackEvent('open-share-discuss');
 }
 
 var on_hide_share = function() {
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'close-share-discuss']);
+    ANALYTICS.trackEvent('close-share-discuss');
 }
 
 var resize = function() {
@@ -459,7 +459,7 @@ var resize = function() {
 
 var onClippyCopy = function(e) {
     alert('Copied to your clipboard!');
-    _gaq.push(['_trackEvent', APP_CONFIG.PROJECT_SLUG, 'summary-copied']);
+    ANALYTICS.trackEvent('summary-copied');
 }
 
 $(function() {
