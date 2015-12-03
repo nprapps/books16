@@ -51,7 +51,7 @@
                     <li class="book-modal-links">
                         <a href="<%= link.url %>" target="_blank">
                             <strong>
-                            <% if (link.category) { %><%= link.category %>:<% } else { %>Feature:<% } %>
+                            <% if (link.category) { %><%= link.category %><% if (link.title) { %>:<% } %><% } else { %>Feature:<% } %>
                             </strong>
                             <%= link.title %>
                         </a>

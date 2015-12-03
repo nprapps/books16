@@ -286,9 +286,9 @@ class Book(object):
         """
         Get links for a book from NPR.org book page
         """
-        url = 'http://www.npr.org/%s' % value
-        print 'LOG (%s): Getting links from %s' % (self.title, url)
-        r = requests.get(url)
+        book_page_url = 'http://www.npr.org/%s' % value
+        print 'LOG (%s): Getting links from %s' % (self.title, book_page_url)
+        r = requests.get(book_page_url)
         soup = BeautifulSoup(r.content, 'html.parser')
         items = soup.select('.storylist article')
         item_list = []
@@ -313,6 +313,16 @@ class Book(object):
                 print u'LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url'])
             else:
                 print u'LOG (%s): Duplicate link %s on %s' % (self.title, link['title'], link['url'])
+
+        first_read = soup.select('.readexcerpt a')
+        if len(first_read):
+            link = {
+                'category': 'Read an excerpt',
+                'url': '%s#excerpt' % book_page_url,
+                'title': '',
+            }
+            item_list.append(link)
+            print u'LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url'])
 
         return item_list
 
