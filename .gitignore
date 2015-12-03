@@ -53,4 +53,5 @@ analytics.json
 analytics.txt
 www/static-data/*
 data/books.csv
+data/tag-audit.csv
 www/share/*
