@@ -491,9 +491,21 @@ $(function() {
             loop_index: i
         });
         $books_grid.append(book_grid_content);
+    });
 
+    window.BOOKS_SORTED = _.sortBy(_.map(window.BOOKS, function(book) {
+        if (book.title.slice(0, 4).toLowerCase() === 'the ') {
+            book.sort_title = book.title.slice(4, book.title.length);
+        } else if (book.title.slice(0, 2).toLowerCase() == 'a ') {
+            book.sort_title = book.title.slice(2, book.title.length);
+        } else {
+            book.sort_title = book.title
+        }
+        return book;
+    }), 'sort_title');
+    _.each(window.BOOKS_SORTED, function(book, i) {
         var book_list_content = window.JST["book_list_item"]({
-            book: book, 
+            book: book,
             loop_index: i
         });
         $books_list.append(book_list_content);
