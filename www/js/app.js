@@ -186,6 +186,7 @@ var on_tag_clicked = function() {
         hasher.setHash('_');
     }
 
+    toggle_filter_modal();
     return false;
 };
 
@@ -359,7 +360,11 @@ var on_hash_changed = function(new_hash, old_hash) {
         filter_books();
     }
 
-
+    if (selected_tags.length > 0) {
+        $mobile_filters_btn.text('Add more filters');
+    } else {
+        $mobile_filters_btn.text('Filter by tags');
+    }
 
     first_hash = false;
 

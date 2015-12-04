@@ -58,6 +58,7 @@
                     </p>
                 </div>
                 <button id="mobile-filters" class="visible-xs btn btn-primary btn-block">{{ COPY.content.filter_button }}</button>
+                <button id="clear-mobile-filters" class="visible-xs btn btn-large btn-info clear-tags hide" data-filter-value="*"><i class="icon-cancel-circled2">&nbsp;&nbsp;</i>{{ COPY.content.clear_filters }}</button>
 
 
                 <!-- All Tags List -->
@@ -65,18 +66,16 @@
 
                     <li class="visible-xs mobile-label">{{ COPY.content.filter_by }} <span class="close visible-xs close-modal" aria-hidden="true">&times;</span></li>
 
-                        <li>
+                    <li class="hidden-xs">
                         <button class="btn btn-large btn-info clear-tags hide" data-filter-value="*"><i class="icon-cancel-circled2">&nbsp;&nbsp;</i>{{ COPY.content.clear_filters }}</button>
-                        </li>
+                    </li>
                     {% for row in COPY.tags %}
-                       <li>
-                           <button
-                           class="btn btn-large btn-info tag {{ row.key }}"
-                           data-filter-value=".tag-{{ row.key }}" data-tag-slug="{{ row.key }}">{{ row.value }}</button>
-                       </li>
+                     <li>
+                         <button
+                         class="btn btn-large btn-info tag {{ row.key }}"
+                         data-filter-value=".tag-{{ row.key }}" data-tag-slug="{{ row.key }}">{{ row.value }}</button>
+                     </li>
                     {% endfor %}
-
-                    <li><a href="javascript:;" class="visible-xs close-modal" id="close-mobile-filter">Done</a></li>
                     <li><p class="browse">Browse other editions of the concierge: <a href="http://apps.npr.org/best-books-2013/" target="_blank">2013</a>, <a href="http://apps.npr.org/best-books-2014/" target="_blank">2014</a></p></li>
 
                 </ul>
