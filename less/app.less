@@ -1076,6 +1076,7 @@ h1 + #story-meta { margin-top: -11px; }
   display:table;
   width:100%;
   border-radius:0;
+  table-layout: fixed;
 }
 .modal-body-inner{
     display:table-cell;
@@ -1328,6 +1329,18 @@ h1 + #story-meta { margin-top: -11px; }
     >a:hover {
         color: lighten(@wintergreen4, 20%);
     }
+}
+
+pre {
+    font-family: @font-family-sans-serif;
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: 14px;
+    overflow: auto;
+    word-wrap: normal;
+    word-break: normal;
+    white-space: pre;
 }
 
 // Footer
@@ -1684,8 +1697,10 @@ footer {
             margin-bottom: 5px;
         }
     }
-    
 
+    pre {
+        font-size: 12px;
+    }
 }
 @media (max-width: 480px) {
     section.the-goods { margin-top: 33px; }
@@ -1704,10 +1719,6 @@ footer {
 
     .modal-dialog {
         width: 95%;
-    }
-
-    .modal-text {
-
     }
 
     .text {

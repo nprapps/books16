@@ -230,6 +230,11 @@ class Book(object):
         self.reviewer_id = self._process_text(kwargs['reviewer ID'])
         self.reviewer_link = self._process_text(kwargs['reviewer link'])
 
+        if kwargs['html text']:
+            self.html_text = True
+        else:
+            self.html_text = False
+
         self.isbn = self._process_text(kwargs['isbn'])
         if self.isbn:
             self.isbn13 = self._process_isbn13(self.isbn)
