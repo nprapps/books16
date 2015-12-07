@@ -39,7 +39,7 @@ def update():
     """
     Load books and covers
     """
-    update_featured_social()
+    #update_featured_social()
     load_books()
     load_images()
     #make_promotion_thumb()

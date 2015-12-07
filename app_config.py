@@ -19,7 +19,7 @@ NAMES
 """
 # Project name to be used in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = 'books15'
+PROJECT_SLUG = 'best-books-2015'
 
 # Project name to be used in file paths
 PROJECT_FILENAME = 'books15'
@@ -162,9 +162,11 @@ def get_secrets():
     """
     secrets_dict = {}
 
+    project_slug = PROJECT_SLUG.replace('-', '_')
+
     for k,v in os.environ.items():
-        if k.startswith(PROJECT_SLUG):
-            k = k[len(PROJECT_SLUG) + 1:]
+        if k.startswith(project_slug):
+            k = k[len(project_slug) + 1:]
             secrets_dict[k] = v
 
     return secrets_dict
@@ -184,7 +186,6 @@ def configure_targets(deployment_target):
     global DEPLOYMENT_TARGET
     global DISQUS_SHORTNAME
     global ASSETS_MAX_AGE
-    global PROJECT_SLUG
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
@@ -196,7 +197,6 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
-        PROJECT_SLUG = 'best-books-2015'
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
