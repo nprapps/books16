@@ -517,6 +517,29 @@ def load_images():
     print "End."
 
 @task
+def get_oclcs():
+    # Open the books JSON.
+    with open('www/static-data/books.json', 'rb') as readfile:
+        books = json.loads(readfile.read())
+
+    for book in books:
+        if not book['oclc']:
+            url = 'http://xisbn.worldcat.org/webservices/xid/isbn/%s' % book['isbn']
+            r = requests.get(url, params={'method':'getMetadata', 'format':'json', 'fl':'oclcnum'})
+            response = r
+            data = r.json()
+            if data.get('stat') == 'ok':
+                oclc = data['list'][0]['oclcnum'][0]
+                #print u'LOG (%s): Found OCLC link %s' % (self.title, oclc_link)
+                print oclc
+            else:
+                #import ipdb; ipdb.set_trace();
+                print ''
+        else:
+            print book['oclc']
+
+
+@task
 def make_promotion_thumb():
     images_per_column = TOTAL_IMAGES / IMAGE_COLUMNS
     image_width = PROMOTION_IMAGE_WIDTH / IMAGE_COLUMNS
