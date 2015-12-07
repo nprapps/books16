@@ -184,6 +184,7 @@ def configure_targets(deployment_target):
     global DEPLOYMENT_TARGET
     global DISQUS_SHORTNAME
     global ASSETS_MAX_AGE
+    global PROJECT_SLUG
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
@@ -195,6 +196,7 @@ def configure_targets(deployment_target):
         DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         ASSETS_MAX_AGE = 86400
+        PROJECT_SLUG = 'best-books-2015'
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
