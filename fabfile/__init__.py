@@ -137,7 +137,7 @@ def update():
     data.update()
 
 @task
-def deploy(remote='origin', reload=False):
+def deploy(quick=None, remote='origin', reload=False):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
     """
@@ -163,7 +163,9 @@ def deploy(remote='origin', reload=False):
         if app_config.DEPLOY_SERVICES:
             servers.deploy_confs()
 
-    update()
+    if quick != 'quick':
+        update()
+
     render.render_all()
 
     # Clear files that should never be deployed
