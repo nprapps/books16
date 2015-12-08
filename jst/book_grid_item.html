@@ -5,7 +5,7 @@
     <div class="book-outer-wrapper">
         <!-- Book Image -->
        <% if (book.teaser) { %>
-        <div class="review hover"><%= book.teaser|safe %><br /><div class="reviewer hover"><span class="reviewer-span">Read <strong><%= book.reviewer %>'<% if (book.reviewer[book.reviewer.length-1] != 's') { %>s<% } %></strong> full recommendation &raquo;</span></div></div>
+        <div class="review hover"><%= book.teaser %><br /><div class="reviewer hover"><span class="reviewer-span">Read <strong><%= book.reviewer %>'<% if (book.reviewer[book.reviewer.length-1] != 's') { %>s<% } %></strong> full recommendation &raquo;</span></div></div>
         <% } %>
         <img src="assets/img/cover-loading.gif" data-src="assets/cover/<%= book.slug %>.jpg" alt="<%= book.title %>"/>
     </div>

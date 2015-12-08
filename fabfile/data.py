@@ -14,6 +14,7 @@ import os
 import re
 import requests
 import sys
+import string
 import xlrd
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
@@ -33,6 +34,43 @@ SLUGS_TO_TAGS = {}
 IMAGE_COLUMNS = 20
 TOTAL_IMAGES = 160
 PROMOTION_IMAGE_WIDTH = 1200
+
+def _make_teaser(book):
+    """
+    Calculate a teaser
+    """
+    tag_stripper = re.compile(r'<.*?>')
+
+    try:
+        img = Image.open('www/assets/cover/%s.jpg' % book.slug)
+        width, height = img.size
+
+        # Poor man's packing algorithm. How much text will fit?
+        chars = height / 25 * 7
+    except IOError:
+        chars = 140
+
+    text = tag_stripper.sub('', book.text)
+
+    if len(text) <= chars:
+        return text
+
+    i = chars
+
+    # Walk back to last full word
+    while text[i] != ' ':
+        i -= 1
+
+    # Like strip, but decrements the counter
+    if text.endswith(' '):
+        i -= 1
+
+    # Kill trailing punctuation
+    exclude = set(string.punctuation)
+    if text[i-1] in exclude:
+        i -= 1
+
+    return '&#8220;' + text[:i] + ' ...&#8221;'
 
 @task(default=True)
 def update():
@@ -229,6 +267,8 @@ class Book(object):
         self.reviewer = self._process_text(kwargs['reviewer'])
         self.reviewer_id = self._process_text(kwargs['reviewer ID'])
         self.reviewer_link = self._process_text(kwargs['reviewer link'])
+
+        self.teaser = _make_teaser(self)
 
         if kwargs['html text']:
             self.html_text = True
