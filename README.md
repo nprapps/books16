@@ -22,7 +22,7 @@ Books Concierge (2015 version)
 What is this?
 -------------
 
-A snappy looking presentation of NPR contributors' favorite books of the year.
+[A snappy looking presentation of NPR contributors' favorite books of the year.](http://apps.npr.org/best-books-2015/)
 
 This code is open source under the MIT license. See LICENSE for complete details.
 
