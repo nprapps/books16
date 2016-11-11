@@ -1,4 +1,4 @@
-Books Concierge (2015 version)
+Books Concierge (2016 version)
 ==============================
 
 * [What is this?](#what-is-this)
@@ -22,7 +22,7 @@ Books Concierge (2015 version)
 What is this?
 -------------
 
-[A snappy looking presentation of NPR contributors' favorite books of the year.](http://apps.npr.org/best-books-2015/)
+[A snappy looking presentation of NPR contributors' favorite books of the year.](http://apps.npr.org/best-books-2016/)
 
 This code is open source under the MIT license. See LICENSE for complete details.
 
@@ -77,8 +77,8 @@ curl https://npmjs.org/install.sh | sh
 Then bootstrap the project:
 
 ```
-cd books14
-mkvirtualenv --no-site-packages books14
+cd books16
+mkvirtualenv --no-site-packages books16
 pip install -r requirements.txt
 npm install
 fab update
@@ -149,7 +149,7 @@ The app template is outfitted with a few ``fab`` utility functions that make pul
 To update the latest document, simply run:
 
 ```
-fab copytext.update 
+fab copytext.update
 ```
 
 Note: ``copytext.update`` runs automatically whenever ``fab render`` is called.
