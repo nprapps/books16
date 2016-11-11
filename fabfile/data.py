@@ -16,6 +16,7 @@ import requests
 import sys
 import string
 import xlrd
+import logging
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
@@ -26,6 +27,10 @@ from datetime import datetime
 from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
 
 TAGS_TO_SLUGS = {}
 SLUGS_TO_TAGS = {}
@@ -401,7 +406,7 @@ def get_books_csv():
     """
     Downloads the books CSV from google docs.
     """
-    csv_url = "https://docs.google.com/spreadsheet/pub?key=%s&single=true&gid=0&output=csv" % (
+    csv_url = 'https://docs.google.com/spreadsheets/d/%s/pub?gid=0&single=true&output=csv' % (
         app_config.DATA_GOOGLE_DOC_KEY)
     r = requests.get(csv_url)
 
@@ -484,8 +489,10 @@ def load_books():
     Loads/reloads just the book data.
     Does not save image files.
     """
+    logger.info("start load_books")
     get_books_csv()
     parse_books_csv()
+    logger.info("end load_books")
 
 @task
 def load_images():

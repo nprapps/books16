@@ -23,7 +23,6 @@ def bootstrap():
     github.create_labels(auth)
     github.create_tickets(auth)
     github.create_milestones(auth)
-    github.create_hipchat_hook(auth)
 
 @task
 def from_file(path):
