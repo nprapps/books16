@@ -19,20 +19,20 @@ NAMES
 """
 # Project name to be used in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = 'best-books-2015'
+PROJECT_SLUG = 'best-books-2016'
 
 # Project name to be used in file paths
-PROJECT_FILENAME = 'books15'
+PROJECT_FILENAME = 'books16'
 
 # The name of the repository containing the source
-REPOSITORY_NAME = 'books15'
+REPOSITORY_NAME = 'books16'
 GITHUB_USERNAME = 'nprapps'
 REPOSITORY_URL = 'git@github.com:%s/%s.git' % (GITHUB_USERNAME, REPOSITORY_NAME)
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
 
 # Project name used for assets rig
 # Should stay the same, even if PROJECT_SLUG changes
-ASSETS_SLUG = 'books15'
+ASSETS_SLUG = 'books16'
 
 """
 DEPLOYMENT
@@ -91,10 +91,10 @@ DEBUG = True
 """
 COPY EDITING
 """
-COPY_GOOGLE_DOC_KEY = '1iV3gN-3S7W_0_R8GqJ-jYKDsbW2AOafoc3kZB59bIPE'
+COPY_GOOGLE_DOC_KEY = '1D7z6AocqErij7D8GMGMfxltxweu9yzPN60EuRDeaLNw'
 COPY_PATH = 'data/copy.xlsx'
 
-DATA_GOOGLE_DOC_KEY = '1uY_0zU7wAa1TLYGC4yGJZUamLulRTJZiwKWmiHZ73qU'
+DATA_GOOGLE_DOC_KEY = '1eTqxloMzKaTWHS--4Xi0QpsJiyL0HUswQa0zmwrpG3g'
 
 LINK_CATEGORY_MAP = {
     'Author Interviews': 'Interview',
@@ -187,7 +187,7 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -197,7 +197,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 86400
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
-        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -207,10 +207,10 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
     else:
         S3_BUCKET = None
-        S3_BASE_URL = 'http://127.0.0.1:8000'
+        S3_BASE_URL = '//127.0.0.1:8000'
         S3_DEPLOY_URL = None
         SERVERS = []
-        SERVER_BASE_URL = 'http://127.0.0.1:8001/%s' % PROJECT_SLUG
+        SERVER_BASE_URL = '//127.0.0.1:8001/%s' % PROJECT_SLUG
         SERVER_LOG_PATH = '/tmp'
         DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
