@@ -535,13 +535,17 @@ def load_images():
         # Request the image.
         r = requests.get(book_url, params=params)
 
-        path = 'www/assets/cover/%s.jpg' % book['slug']
+        path = 'www/assets/cover'
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        imagepath = '%s/%s.jpg' % (path, book['slug'])
 
         # Write the image to www using the slug as the filename.
-        with open(path, 'wb') as writefile:
+        with open(imagepath, 'wb') as writefile:
             writefile.write(r.content)
 
-        file_size = os.path.getsize(path)
+        file_size = os.path.getsize(imagepath)
         if file_size < 10000:
             print u'LOG (%s): Image not available from Baker and Taylor, using NPR book page' % book['title']
             url = 'http://www.npr.org/%s' % book['book_seamus_id']
@@ -559,8 +563,8 @@ def load_images():
             except IndexError:
                 print u'ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url)
 
-        image = Image.open(path)
-        image.save(path, optimize=True, quality=75)
+        image = Image.open(imagepath)
+        image.save(imagepath, optimize=True, quality=75)
 
     print "End."
 
