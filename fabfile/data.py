@@ -262,7 +262,7 @@ class Book(object):
         Process all fields for row in the spreadsheet for serialization
         """
         self.title = self._process_text(kwargs['title'])
-        print u'Processing %s' % self.title
+        logger.info('Processing %s' % self.title)
         self.book_seamus_id = kwargs['book_seamus_id']
         self.slug = self._slugify(kwargs['title'])
 
@@ -337,10 +337,10 @@ class Book(object):
         Get links for a book from NPR.org book page
         """
         book_page_url = 'http://www.npr.org/%s' % value
-        print 'LOG (%s): Getting links from %s' % (self.title, book_page_url)
+        logger.info('LOG (%s): Getting links from %s' % (self.title, book_page_url))
         r = requests.get(book_page_url)
         soup = BeautifulSoup(r.content, 'html.parser')
-        items = soup.select('.storylist article')
+        items = soup.select('.storylist article.item')
         item_list = []
         urls = []
         for item in items:
@@ -360,9 +360,9 @@ class Book(object):
 
                 urls.append(link['url'])
                 item_list.append(link)
-                print u'LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url'])
+                logger.info('LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
             else:
-                print u'LOG (%s): Duplicate link %s on %s' % (self.title, link['title'], link['url'])
+                logger.info('LOG (%s): Duplicate link %s on %s' % (self.title, link['title'], link['url']))
 
         first_read = soup.select('.readexcerpt a')
         if len(first_read):
@@ -372,7 +372,7 @@ class Book(object):
                 'title': '',
             }
             item_list.append(link)
-            print u'LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url'])
+            logger.info('LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
 
         return item_list
 
@@ -443,7 +443,7 @@ def parse_books_csv():
     with open('data/books.csv', 'rb') as readfile:
         books = list(csv.DictReader(readfile))
 
-    print "Start parse_books_csv(): %i rows." % len(books)
+    logger.info("Start parse_books_csv(): %i rows." % len(books))
 
     book_list = []
 
@@ -480,8 +480,7 @@ def parse_books_csv():
         writer.writerow(['tag', 'slug', 'count'])
         for slug, count in tags.items():
             writer.writerow([slug, SLUGS_TO_TAGS[slug], count])
-
-    print "End."
+    logger.info("End.")
 
 @task
 def load_books():
@@ -490,7 +489,9 @@ def load_books():
     Does not save image files.
     """
     logger.info("start load_books")
+    logger.info("get books csv")
     get_books_csv()
+    logger.info("start parse_books_csv")
     parse_books_csv()
     logger.info("end load_books")
 
