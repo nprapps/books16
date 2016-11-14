@@ -453,6 +453,7 @@ h1 + #story-meta { margin-top: -11px; }
             }
         }
 
+
         .review:hover {
             opacity: 1;
 
@@ -476,6 +477,82 @@ h1 + #story-meta { margin-top: -11px; }
             }
         }
     }
+
+    .book-outer-wrapper:hover{
+      width:100%;
+      max-width:300px;
+      position: relative;
+      padding: 0 5px;
+      // min-height: 300px;
+      text-align: left;
+
+      .review {
+          opacity: 1;
+          position: absolute;
+          top: 0;
+          right: 0;
+          margin: 0 5px;
+          background-color: rgba(255, 255, 255, 0.7);
+          border:3px solid @wintergreen4;
+          box-sizing:border-box;
+          color: black;
+          -webkit-transition: all 0.5s ease;
+          -moz-transition: all 0.5s ease;
+          -o-transition: all 0.5s ease;
+          transition: all 0.5s ease;
+          padding: 10px 15px 10px 15px;
+          overflow: hidden;
+          height: 100%;
+          text-indent: -0.5em;
+          font-size: 15px;
+          z-index: 200;
+              &.hover{
+                  @media screen and (max-width: 1280px){
+                      font-size: 12px;
+                  }
+              }
+              @media screen and (max-width: @screen-xs-max){
+                  opacity:0;
+              }
+
+          .reviewer {
+              display: block;
+              padding: 10px;
+              color: @wintergreen4;
+              font-size: 14px;
+              line-height: 18px;
+              text-align: right;
+              &.hover{
+                  @media screen and (max-width: 1280px){
+                      font-size: 12px;
+                  }
+              }
+              &:hover .reviewer-span{
+                  text-decoration:underline;
+              }
+          }
+      }
+
+      img {
+          width: 100%;
+          max-width: 300px;
+          padding: 3px;
+          filter: blur(3px) opacity(0.7);
+
+
+          @media screen and (max-width: 480px) {
+              display: block;
+              margin-left: auto;
+              margin-right: auto;
+          }
+
+          @media screen and (max-width: 320px) {
+              width: 100%;
+          }
+      }
+    }
+
+
 }
 
 
@@ -501,8 +578,9 @@ h1 + #story-meta { margin-top: -11px; }
     display: none;
 
     @media (max-width: 640px){
-        width: 50px;
+        width: 100%;
         background-position: center;
+        bottom: 0;
 
     }
 
@@ -517,7 +595,8 @@ h1 + #story-meta { margin-top: -11px; }
         display: block;
 
         @media (max-width: 640px){
-            display: none;
+            display: block;
+            text-align: center;
         }
 
     }
@@ -529,7 +608,7 @@ h1 + #story-meta { margin-top: -11px; }
         }
 
         @media (max-width: 640px){
-            display: block;
+            display: none;
             padding-left: 0;
             text-align: center;
         }
