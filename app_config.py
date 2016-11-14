@@ -94,7 +94,7 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1D7z6AocqErij7D8GMGMfxltxweu9yzPN60EuRDeaLNw'
 COPY_PATH = 'data/copy.xlsx'
 
-DATA_GOOGLE_DOC_KEY = '1eTqxloMzKaTWHS--4Xi0QpsJiyL0HUswQa0zmwrpG3g'
+DATA_GOOGLE_DOC_KEY = '15oVfXn5BLhzbG4f6kOUidIBMq-LhU6twQUyC0ClXYws'
 
 LINK_CATEGORY_MAP = {
     'Author Interviews': 'Interview',
