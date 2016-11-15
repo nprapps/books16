@@ -17,6 +17,7 @@ import sys
 import string
 import xlrd
 import logging
+import time
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
@@ -27,6 +28,7 @@ from datetime import datetime
 from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
+from csvkit.py2 import CSVKitDictWriter
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -482,6 +484,7 @@ def parse_books_csv():
             writer.writerow([slug, SLUGS_TO_TAGS[slug], count])
     logger.info("End.")
 
+
 @task
 def load_books():
     """
@@ -490,10 +493,11 @@ def load_books():
     """
     logger.info("start load_books")
     logger.info("get books csv")
-    get_books_csv()
+    # get_books_csv()
     logger.info("start parse_books_csv")
     parse_books_csv()
     logger.info("end load_books")
+
 
 @task
 def load_images():
@@ -547,7 +551,7 @@ def load_images():
 
         file_size = os.path.getsize(imagepath)
         if file_size < 10000:
-            print u'LOG (%s): Image not available from Baker and Taylor, using NPR book page' % book['title']
+            logger.info('(%s): Image not available from Baker and Taylor, using NPR book page' % book['title'])
             url = 'http://www.npr.org/%s' % book['book_seamus_id']
             npr_r = requests.get(url)
             soup = BeautifulSoup(npr_r.content, 'html.parser')
@@ -556,17 +560,18 @@ def load_images():
                     alt_img_url = 'http://media.npr.org/assets/bakertaylor/covers/t/the-three-body-problem/9780765377067_custom-d83e0e334f348e6c52fe5da588ec3448921af64f-s600-c85.jpg'
                 else:
                     alt_img_url = soup.select('.bookedition .image img')[0].attrs.get('src').replace('s99', 's400')
-                print 'LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url)
+                logger.info('LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url))
                 alt_img_resp = requests.get(alt_img_url)
-                with open(path, 'wb') as writefile:
+                with open(imagepath, 'wb') as writefile:
                     writefile.write(alt_img_resp.content)
             except IndexError:
-                print u'ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url)
+                logger.info('ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url))
 
         image = Image.open(imagepath)
         image.save(imagepath, optimize=True, quality=75)
 
-    print "End."
+    logger.info("Load Images End.")
+
 
 @task
 def get_oclcs():
@@ -575,20 +580,24 @@ def get_oclcs():
         books = json.loads(readfile.read())
 
     for book in books:
+        time.sleep(1)
         if not book['oclc']:
-            url = 'http://xisbn.worldcat.org/webservices/xid/isbn/%s' % book['isbn']
-            r = requests.get(url, params={'method':'getMetadata', 'format':'json', 'fl':'oclcnum'})
-            response = r
+            url = 'http://xisbn.worldcat.org/webservices/xid/isbn/%s' % (
+                book['isbn'])
+            logger.info("url %s" % url)
+            r = requests.get(url, params={'method': 'getMetadata',
+                                          'format': 'json',
+                                          'fl': 'oclcnum'})
             data = r.json()
+            logger.info(data)
             if data.get('stat') == 'ok':
                 oclc = data['list'][0]['oclcnum'][0]
-                #print u'LOG (%s): Found OCLC link %s' % (self.title, oclc_link)
-                print oclc
+                logger.info('isbn: %s, oclc: %s' % (book['isbn'], oclc))
             else:
-                #import ipdb; ipdb.set_trace();
-                print ''
+                # import ipdb; ipdb.set_trace();
+                logger.warning('data: %s' % data)
         else:
-            print book['oclc']
+            logger.info('book has already a oclc number: %s' % book['oclc'])
 
 
 @task
@@ -635,3 +644,73 @@ def make_promotion_thumb():
     cropped = image.crop((0, 0, final_width, min_height))
 
     cropped.save('www/assets/img/covers.jpg')
+
+
+def _scrape_page(url):
+    """
+    scrape a book review archive page
+    return list of found reviews and the last date
+    """
+    reviews = []
+    r = requests.get(url)
+    if r.status_code == 200:
+        soup = BeautifulSoup(r.content, 'html.parser')
+        archivelist =  soup.find('div', class_="archivelist")
+        items = archivelist.findAll('article', class_="item")
+        logger.info(len(items))
+        for item in items:
+            review = {}
+            t = item.find('time')
+            if t:
+                published_date = t['datetime']
+            else:
+                published_date = None
+            logger.debug('published_date: %s' % published_date)
+            review['published_date'] = published_date
+            a = item.find('h2', class_='title').find('a')
+            if a:
+                book_review = a['href']
+            else:
+                book_review = None
+            logger.debug('review_link: %s' % book_review)
+            review['review_link'] = book_review
+            review['review_seamus_id'] = book_review.split('/')[6]
+            reviews.append(review)
+        return reviews, published_date
+    else:
+        return None, None
+
+@task
+def scrape_book_reviews():
+    """
+    Loads/reloads just the book data.
+    Does not save image files.
+    """
+    HEADER = ["published_date", "review_link", "review_seamus_id"]
+    logger.info("start scrape books")
+    reviews_url_tpl = 'http://www.npr.org/sections/book-reviews/archive?date=%s%s'
+    reviews = []
+    with open('data/book_reviews.csv', 'w') as fout:
+        writer = CSVKitDictWriter(fout, fieldnames=HEADER)
+        writer.writeheader()
+        for month in reversed(range(1, 13)):
+            # Initialize first iteration for the month
+            last_date = '2016-%s-31' % month
+            bits = last_date.split('-')
+            scrape_month = int(bits[1])
+            while scrape_month == month:
+                time.sleep(1)
+                new_date_suffix = '-%s-%s' % (bits[2], bits[0])
+                url = reviews_url_tpl % (scrape_month, new_date_suffix)
+                rows, last_date = _scrape_page(url)
+                if rows:
+                    reviews.extend(rows)
+                bits = last_date.split('-')
+                scrape_month = int(bits[1])
+                logger.info('last_date: %s' % last_date)
+        unique_reviews = [dict(t) for t in set([tuple(d.items()) for d in reviews])]
+        sorted_reviews = sorted(unique_reviews, key=lambda k: k['published_date'], reverse=True)
+        writer.writerows(sorted_reviews)
+
+
+    logger.info("end scrape books")

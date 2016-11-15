@@ -29,7 +29,7 @@
                 <% }); %></p> <% } %>
 
                 <!-- Book Description/Review -->
-                <% if (book.text && !book.html_text) { %><p class="text"><%= book.text %></p> 
+                <% if (book.text && !book.html_text) { %><p class="text"><%= book.text %></p>
                 <% } else if (book.text && book.html_text) { %><%= book.text %>
                 <% } %>
                 <% if(book.reviewer) { %><p class="reviewer">&mdash; <%= COPY.content.recommended_by %> <strong><% if (book['reviewer_link']) { %><a href="<%= book['reviewer_link'] %>" target="_blank"><%= book.reviewer %></a><% } else { %><%= book.reviewer %><% } %></strong><% if (book['reviewer_id']) { %>, <%= book['reviewer_id'] %><% } %></p> <% } %>
@@ -67,7 +67,7 @@
         <div class="modal-footer">
             <div class="social">
                 <p>Share Review:</p>
-                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.S3_BASE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2014 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
+                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.S3_BASE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2016 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
                     <div class="share-button">
                         <span class="icon icon-mail"></span>
                     </div>

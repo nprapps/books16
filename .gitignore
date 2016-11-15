@@ -54,4 +54,5 @@ analytics.txt
 www/static-data/*
 data/books.csv
 data/tag-audit.csv
+data/book_reviews.csv
 www/share/*
