@@ -492,7 +492,7 @@ $(function() {
     window.BOOKS = _.shuffle(window.BOOKS);
     _.each(window.BOOKS, function(book, i) {
         var book_grid_content = window.JST["book_grid_item"]({
-            book: book, 
+            book: book,
             loop_index: i
         });
         $books_grid.append(book_grid_content);
@@ -533,6 +533,9 @@ $(function() {
     $share_modal.on('shown.bs.modal', on_show_share);
     $share_modal.on('hidden.bs.modal', on_hide_share);
     $(window).on('resize', resize);
+    $(document).scroll(function(){
+      checkOffset();
+    });
 
     // Set up the page.
     resize();
@@ -559,3 +562,19 @@ $(function() {
     _.delay(unveil_grid, 0);
 
 });
+
+function checkOffset(){
+  if ($(window).width() <= 640){
+    var scrollBottom = $(document).height() - $(window).height() - $(window).scrollTop();;
+
+    if (scrollBottom <= $('#footer').height() + 10){
+       var spaceDiff = ($('#footer').height() + 10) - scrollBottom;
+       $('#back-to-top').css({'bottom':spaceDiff});
+    } else {
+      $('#back-to-top').css({'bottom':'0'});
+    }
+  } else {
+    $('#back-to-top').css({'bottom':'100'});
+  }
+
+}
