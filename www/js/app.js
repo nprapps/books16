@@ -429,6 +429,22 @@ var toggle_books_list = function() {
     }
 };
 
+var setupClipboardjs = function() {
+    var clipboard = new Clipboard('.clippy');
+    clipboard.on('success', function(e) {
+        e.clearSelection();
+        $(e.trigger).tooltip('show');
+        setTimeout(hideTooltip, 1000);
+        ANALYTICS.trackEvent('summary-copied');
+        function hideTooltip() {
+            $(e.trigger).tooltip('hide');
+        }
+    });
+    clipboard.on('error', function(e) {
+        console.log('Press Press Ctrl+C to copy');
+    });
+}
+
 var on_next = function() {
     ANALYTICS.trackEvent('navigate', 'next');
 }
@@ -462,11 +478,6 @@ var resize = function() {
     $large_ad.height(height);
 }
 
-var onClippyCopy = function(e) {
-    alert('Copied to your clipboard!');
-    ANALYTICS.trackEvent('summary-copied');
-}
-
 $(function() {
 
     // Set up the global variables.
@@ -492,7 +503,7 @@ $(function() {
     window.BOOKS = _.shuffle(window.BOOKS);
     _.each(window.BOOKS, function(book, i) {
         var book_grid_content = window.JST["book_grid_item"]({
-            book: book, 
+            book: book,
             loop_index: i
         });
         $books_grid.append(book_grid_content);
@@ -533,7 +544,6 @@ $(function() {
     $share_modal.on('shown.bs.modal', on_show_share);
     $share_modal.on('hidden.bs.modal', on_hide_share);
     $(window).on('resize', resize);
-
     // Set up the page.
     resize();
     $back_to_top.hide();
@@ -544,11 +554,9 @@ $(function() {
         $tags[$tag.data('tag-slug')] = $tag;
     });
 
-    ZeroClipboard.config({ swfPath: 'js/lib/ZeroClipboard.swf' });
-    var clippy = new ZeroClipboard($(".clippy"));
-    clippy.on('ready', function(readyEvent) {
-        clippy.on('aftercopy', onClippyCopy);
-    });
+    // add Clipboard for deeplinks
+    $('[data-toggle="tooltip"]').tooltip();
+    setupClipboardjs();
 
     // Set up the hasher bits to grab the URL hash.
     hasher.changed.add(on_hash_changed);

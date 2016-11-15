@@ -1,5 +1,5 @@
 {
-  "name": "books-2014",
+  "name": "npr-app-template",
   "css_prefix_text": "icon-",
   "css_use_suffix": false,
   "hinting": true,
@@ -95,6 +95,12 @@
       "css": "town-hall",
       "code": 59406,
       "src": "maki"
+    },
+    {
+      "uid": "b429436ec5a518c78479d44ef18dbd60",
+      "css": "clipboard",
+      "code": 61674,
+      "src": "fontawesome"
     }
   ]
 }

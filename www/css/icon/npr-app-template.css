@@ -1,10 +1,11 @@
 @font-face {
-  font-family: 'books-2014';
-  src: url('../font/books-2014.eot?2915434');
-  src: url('../font/books-2014.eot?2915434#iefix') format('embedded-opentype'),
-       url('../font/books-2014.woff?2915434') format('woff'),
-       url('../font/books-2014.ttf?2915434') format('truetype'),
-       url('../font/books-2014.svg?2915434#books-2014') format('svg');
+  font-family: 'npr-app-template';
+  src: url('../font/npr-app-template.eot?57359723');
+  src: url('../font/npr-app-template.eot?57359723#iefix') format('embedded-opentype'),
+       url('../font/npr-app-template.woff2?57359723') format('woff2'),
+       url('../font/npr-app-template.woff?57359723') format('woff'),
+       url('../font/npr-app-template.ttf?57359723') format('truetype'),
+       url('../font/npr-app-template.svg?57359723#npr-app-template') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -13,14 +14,14 @@
 /*
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
-    font-family: 'books-2014';
-    src: url('../font/books-2014.svg?2915434#books-2014') format('svg');
+    font-family: 'npr-app-template';
+    src: url('../font/npr-app-template.svg?57359723#npr-app-template') format('svg');
   }
 }
 */
  
  [class^="icon-"]:before, [class*=" icon-"]:before {
-  font-family: "books-2014";
+  font-family: "npr-app-template";
   font-style: normal;
   font-weight: normal;
   speak: none;
@@ -35,7 +36,7 @@
   /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
   text-transform: none;
-     
+ 
   /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
  
@@ -45,6 +46,10 @@
  
   /* you can be more comfortable with increased icons size */
   /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
  
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
@@ -65,3 +70,4 @@
 .icon-export:before { content: '\e80c'; } /* '' */
 .icon-home:before { content: '\e80d'; } /* '' */
 .icon-town-hall:before { content: '\e80e'; } /* '' */
+.icon-clipboard:before { content: '\f0ea'; } /* '' */
