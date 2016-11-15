@@ -105,7 +105,7 @@ LINK_CATEGORY_DEFAULT = 'Feature'
 """
 SHARING
 """
-SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
+SHARE_URL = '//%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
 
 """
 ADS
@@ -129,9 +129,6 @@ NPR_GOOGLE_ANALYTICS = {
 VIZ_GOOGLE_ANALYTICS = {
     'ACCOUNT_ID': 'UA-5828686-75'
 }
-
-DISQUS_API_KEY = 'tIbSzEhGBE9NIptbnQWn4wy1gZ546CsQ2IHHtxJiYAceyyPoAkDkVnQfCifmCaQW'
-DISQUS_UUID = '0af7f82b-832a-11e5-8a04-3c07544df4b5'
 
 """
 Logging
@@ -187,7 +184,6 @@ def configure_targets(deployment_target):
     global SERVER_LOG_PATH
     global DEBUG
     global DEPLOYMENT_TARGET
-    global DISQUS_SHORTNAME
     global ASSETS_MAX_AGE
     global LOG_LEVEL
 
@@ -196,9 +192,8 @@ def configure_targets(deployment_target):
         S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
-        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DISQUS_SHORTNAME = 'npr-news'
         DEBUG = False
         LOG_LEVEL = logging.INFO
         ASSETS_MAX_AGE = 86400
@@ -207,9 +202,8 @@ def configure_targets(deployment_target):
         S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
-        SERVER_BASE_URL = 'http://%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         LOG_LEVEL = logging.INFO
         ASSETS_MAX_AGE = 20
@@ -220,7 +214,6 @@ def configure_targets(deployment_target):
         SERVERS = []
         SERVER_BASE_URL = '//127.0.0.1:8001/%s' % PROJECT_SLUG
         SERVER_LOG_PATH = '/tmp'
-        DISQUS_SHORTNAME = 'nprviz-test'
         DEBUG = True
         LOG_LEVEL = logging.INFO
         ASSETS_MAX_AGE = 20
