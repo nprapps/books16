@@ -18,6 +18,7 @@ import string
 import xlrd
 import logging
 import time
+import shutil
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
@@ -28,7 +29,7 @@ from datetime import datetime
 from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
-from csvkit.py2 import CSVKitDictWriter
+from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -264,7 +265,7 @@ class Book(object):
         Process all fields for row in the spreadsheet for serialization
         """
         self.title = self._process_text(kwargs['title'])
-        logger.info('Processing %s' % self.title)
+        logger.debug('Processing %s' % self.title)
         self.book_seamus_id = kwargs['book_seamus_id']
         self.slug = self._slugify(kwargs['title'])
 
@@ -272,7 +273,7 @@ class Book(object):
         self.hide_ibooks = kwargs['hide_ibooks']
         self.text = self._process_text(kwargs['text'])
         self.reviewer = self._process_text(kwargs['reviewer'])
-        self.reviewer_id = self._process_text(kwargs['reviewer ID'])
+        self.reviewer_id = self._process_text(kwargs['reviewer id'])
         self.reviewer_link = self._process_text(kwargs['reviewer link'])
 
         self.teaser = _make_teaser(self)
@@ -284,11 +285,17 @@ class Book(object):
 
         self.isbn = self._process_text(kwargs['isbn'])
         if self.isbn:
+            try:
+                int(self.isbn[:8])
+            except ValueError:
+                msg = 'ISBN is not valid'
+                raise Exception(msg)
             self.isbn13 = self._process_isbn13(self.isbn)
         else:
-            print u'ERROR (%s): No ISBN' % self.title
-
-        self.oclc = self._process_text(kwargs['oclc'])
+            msg = 'No ISBN'
+            raise Exception(msg)
+        if kwargs['oclc']:
+            self.oclc = self._process_text(kwargs['oclc'])
         self.links = self._process_links(kwargs['book_seamus_id'])
         self.tags = self._process_tags(kwargs['tags'])
 
@@ -296,10 +303,10 @@ class Book(object):
         """
         Clean text field by replacing smart quotes and removing extra spaces
         """
-        value = value.replace('“','"').replace('”','"')
-        value = value.replace('’', "'")
+        value = value.replace(u'“','"').replace(u'”','"')
+        value = value.replace(u'’', "'")
         value = value.strip()
-        return unicode(value.decode('utf8'))
+        return value
 
     def _process_tags(self, value):
         """
@@ -319,7 +326,7 @@ class Book(object):
                 if tag_slug:
                     item_list.append(tag_slug)
                 else:
-                    print u'ERROR (%s): Unknown tag "%s"' % (self.title, item)
+                    logger.warning('%s: Unknown tag "%s"' % (self.title, item))
 
         # Sort items by order in spreadsheet
         copy = copytext.Copy(app_config.COPY_PATH)
@@ -339,7 +346,7 @@ class Book(object):
         Get links for a book from NPR.org book page
         """
         book_page_url = 'http://www.npr.org/%s' % value
-        logger.info('LOG (%s): Getting links from %s' % (self.title, book_page_url))
+        logger.debug('%s: Getting links from %s' % (self.title, book_page_url))
         r = requests.get(book_page_url)
         soup = BeautifulSoup(r.content, 'html.parser')
         items = soup.select('.storylist article.item')
@@ -362,9 +369,9 @@ class Book(object):
 
                 urls.append(link['url'])
                 item_list.append(link)
-                logger.info('LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
+                logger.debug('%s: Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
             else:
-                logger.info('LOG (%s): Duplicate link %s on %s' % (self.title, link['title'], link['url']))
+                logger.info('%s: Duplicate link %s on %s' % (self.title, link['title'], link['url']))
 
         first_read = soup.select('.readexcerpt a')
         if len(first_read):
@@ -374,7 +381,7 @@ class Book(object):
                 'title': '',
             }
             item_list.append(link)
-            logger.info('LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
+            logger.debug('%s: Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
 
         return item_list
 
@@ -410,10 +417,15 @@ def get_books_csv():
     """
     csv_url = 'https://docs.google.com/spreadsheets/d/%s/pub?gid=0&single=true&output=csv' % (
         app_config.DATA_GOOGLE_DOC_KEY)
+    logger.debug(csv_url)
     r = requests.get(csv_url)
-
-    with open('data/books.csv', 'wb') as writefile:
-        writefile.write(r.content)
+    if r.headers['content-type'] != 'text/csv':
+        logger.error('Unexpected Content-type: %s. Are you sure the spreadsheet is published as csv?' % r.headers['content-type'])
+        if app_config.LOCAL_CSV_PATH:
+            shutil.copy(app_config.LOCAL_CSV_PATH, 'data/books.csv')
+    else:
+        with open('data/books.csv', 'wb') as writefile:
+            writefile.write(r.content)
 
 def get_tags():
     """
@@ -442,8 +454,10 @@ def parse_books_csv():
     get_tags()
 
     # Open the CSV.
-    with open('data/books.csv', 'rb') as readfile:
-        books = list(csv.DictReader(readfile))
+    with open('data/books.csv', 'r') as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+        books = list(reader)
 
     logger.info("Start parse_books_csv(): %i rows." % len(books))
 
@@ -462,7 +476,13 @@ def parse_books_csv():
 
         # Init a book class, passing our data as kwargs.
         # The class constructor handles cleaning of the data.
-        b = Book(**book)
+        try:
+            b = Book(**book)
+        except Exception, e:
+            logger.error("Exception while parsing book: %s. Cause %s" % (
+                book['title'],
+                e))
+            continue
 
         for tag in b.tags:
             if not tags.get(tag):
@@ -493,7 +513,7 @@ def load_books():
     """
     logger.info("start load_books")
     logger.info("get books csv")
-    # get_books_csv()
+    get_books_csv()
     logger.info("start parse_books_csv")
     parse_books_csv()
     logger.info("end load_books")
@@ -545,6 +565,10 @@ def load_images():
 
         imagepath = '%s/%s.jpg' % (path, book['slug'])
 
+        if os.path.exists(imagepath):
+            logger.info('image already downloaded for: %s' % book['slug'])
+            continue
+
         # Write the image to www using the slug as the filename.
         with open(imagepath, 'wb') as writefile:
             writefile.write(r.content)
@@ -571,33 +595,6 @@ def load_images():
         image.save(imagepath, optimize=True, quality=75)
 
     logger.info("Load Images End.")
-
-
-@task
-def get_oclcs():
-    # Open the books JSON.
-    with open('www/static-data/books.json', 'rb') as readfile:
-        books = json.loads(readfile.read())
-
-    for book in books:
-        time.sleep(1)
-        if not book['oclc']:
-            url = 'http://xisbn.worldcat.org/webservices/xid/isbn/%s' % (
-                book['isbn'])
-            logger.info("url %s" % url)
-            r = requests.get(url, params={'method': 'getMetadata',
-                                          'format': 'json',
-                                          'fl': 'oclcnum'})
-            data = r.json()
-            logger.info(data)
-            if data.get('stat') == 'ok':
-                oclc = data['list'][0]['oclcnum'][0]
-                logger.info('isbn: %s, oclc: %s' % (book['isbn'], oclc))
-            else:
-                # import ipdb; ipdb.set_trace();
-                logger.warning('data: %s' % data)
-        else:
-            logger.info('book has already a oclc number: %s' % book['oclc'])
 
 
 @task

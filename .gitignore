@@ -55,4 +55,6 @@ www/static-data/*
 data/books.csv
 data/tag-audit.csv
 data/book_reviews.csv
+data/test*.csv
 www/share/*
+local_settings.py
