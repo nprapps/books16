@@ -94,7 +94,19 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1D7z6AocqErij7D8GMGMfxltxweu9yzPN60EuRDeaLNw'
 COPY_PATH = 'data/copy.xlsx'
 
-DATA_GOOGLE_DOC_KEY = '1eTqxloMzKaTWHS--4Xi0QpsJiyL0HUswQa0zmwrpG3g'
+DATA_GOOGLE_DOC_KEY = '1frkTY_2BeCXsf0Uie9P3Pccx8eulCrr6bWkCOOYSTEU'
+
+# Override
+try:
+    from local_settings import DATA_GOOGLE_DOC_KEY
+except ImportError:
+    pass
+
+# Provide a csv path for testing locally if DATA_GOOGLE_DOC_KEY fails
+try:
+    from local_settings import LOCAL_CSV_PATH
+except ImportError:
+    pass
 
 LINK_CATEGORY_MAP = {
     'Author Interviews': 'Interview',
