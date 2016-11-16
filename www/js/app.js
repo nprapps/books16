@@ -33,8 +33,7 @@ var startTouch;
 var completion = 1;
 var swipeTolerance = 80;
 var touchFactor = 1;
-var nextURL = null;
-var prevURL = null;
+var swipeDetected = null;
 
 /*
  * Scroll to a given element.
@@ -553,7 +552,7 @@ $(function() {
     $(window).on('resize', resize);
 
     if (MOBILE){
-      console.log('GOGOGO');
+      console.log('Touch Screen Detected');
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
       $body.on('touchend', onTouchEnd);
@@ -585,7 +584,7 @@ $(function() {
 
 var onTouchStart = function(e) {
   if ($body.hasClass('modal-open')){
-    console.log("start");
+    console.log("onTouchStart");
     /*
      * Capture start position when swipe initiated
      */
@@ -601,12 +600,11 @@ var onTouchMove = function(e) {
      */
 
   if ($body.hasClass('modal-open')){
+    console.log("onTouchMove");
     $.each(e.originalEvent.changedTouches, function(i, touch) {
         if (!startTouch || touch.identifier !== startTouch.identifier) {
             return true;
         }
-
-
         var yDistance = touch.screenY - startTouch.screenY;
         var xDistance = touch.screenX - startTouch.screenX;
         var direction = (xDistance > 0) ? 'right' : 'left';
@@ -615,24 +613,12 @@ var onTouchMove = function(e) {
             e.preventDefault();
         }
 
-        if (direction == 'right' && xDistance > swipeTolerance) {
-            prevURL = $("#previous-book").attr('href');
-            console.log('RIGHT ' + xDistance);
-            window.location.href = prevURL;
-        } else if (direction == 'right' && xDistance < swipeTolerance) {
-            // $previousArrow.filter(':visible').css({
-            //     'left': (xDistance * touchFactor) + 'px'
-            // });
-        }
-
-        if (direction == 'left' && Math.abs(xDistance) > swipeTolerance) {
-            nextURL = $("#next-book").attr('href');
-            console.log('LEFT ' + xDistance);
-            window.location.href = nextURL;
-        } else if (direction == 'left' && Math.abs(xDistance) < swipeTolerance) {
-            // $nextArrow.filter(':visible').css({
-            //     'right': (Math.abs(xDistance) * touchFactor) + 'px'
-            // });
+        if (Math.abs(xDistance) > swipeTolerance) {
+            if (!swipeDetected) {
+                swipeDetected = direction;
+            } else {
+                console.log('already detected a touchMove to the: ', swipeDetected);
+            }
         }
     });
   };
@@ -642,13 +628,29 @@ var onTouchEnd = function(e) {
     /*
      * Clear swipe start position when swipe ends
      */
-
-  if ($body.hasClass('modal-open')){
-    console.log("end");
-    $.each(e.originalEvent.changedTouches, function(i, touch) {
-        if (startTouch && touch.identifier === startTouch.identifier) {
-            startTouch = undefined;
+    if ($body.hasClass('modal-open')){
+        console.log("onTouchEnd");
+        $.each(e.originalEvent.changedTouches, function(i, touch) {
+            if (startTouch && touch.identifier === startTouch.identifier) {
+                startTouch = undefined;
+            }
+        });
+        if (swipeDetected) {
+            if (swipeDetected === 'right' && previous) {
+                console.log('Swipe Right detected navigate to previous')
+                swipeDetected = null;
+                on_previous();
+                hasher.setHash('book', previous);
+            } else if (swipeDetected === 'left' && next){
+                console.log('Swipe Left detected navigate to next')
+                swipeDetected = null;
+                on_next();
+                hasher.setHash('book', next);
+            }
+            else {
+                console.error('should only detect left or right, saw: ', swipeDetected);
+                swipeDetected = null;
+            }
         }
-    });
-  };
+    }
 }
