@@ -29,6 +29,13 @@ var previous;
 var selected_tags = [];
 var first_hash = true;
 
+var startTouch;
+var completion = 1;
+var swipeTolerance = 80;
+var touchFactor = 1;
+var nextURL = null;
+var prevURL = null;
+
 /*
  * Scroll to a given element.
  */
@@ -544,6 +551,14 @@ $(function() {
     $share_modal.on('shown.bs.modal', on_show_share);
     $share_modal.on('hidden.bs.modal', on_hide_share);
     $(window).on('resize', resize);
+
+    if (MOBILE){
+      console.log('GOGOGO');
+      $body.on('touchstart', onTouchStart);
+      $body.on('touchmove', onTouchMove);
+      $body.on('touchend', onTouchEnd);
+    }
+
     // Set up the page.
     resize();
     $back_to_top.hide();
@@ -567,3 +582,73 @@ $(function() {
     _.delay(unveil_grid, 0);
 
 });
+
+var onTouchStart = function(e) {
+  if ($body.hasClass('modal-open')){
+    console.log("start");
+    /*
+     * Capture start position when swipe initiated
+     */
+    if (!startTouch) {
+        startTouch = $.extend({}, e.originalEvent.targetTouches[0]);
+    }
+  };
+}
+
+var onTouchMove = function(e) {
+    /*
+     * Track finger swipe
+     */
+
+  if ($body.hasClass('modal-open')){
+    $.each(e.originalEvent.changedTouches, function(i, touch) {
+        if (!startTouch || touch.identifier !== startTouch.identifier) {
+            return true;
+        }
+
+
+        var yDistance = touch.screenY - startTouch.screenY;
+        var xDistance = touch.screenX - startTouch.screenX;
+        var direction = (xDistance > 0) ? 'right' : 'left';
+
+        if (Math.abs(yDistance) < Math.abs(xDistance)) {
+            e.preventDefault();
+        }
+
+        if (direction == 'right' && xDistance > swipeTolerance) {
+            prevURL = $("#previous-book").attr('href');
+            console.log('RIGHT ' + xDistance);
+            window.location.href = prevURL;
+        } else if (direction == 'right' && xDistance < swipeTolerance) {
+            // $previousArrow.filter(':visible').css({
+            //     'left': (xDistance * touchFactor) + 'px'
+            // });
+        }
+
+        if (direction == 'left' && Math.abs(xDistance) > swipeTolerance) {
+            nextURL = $("#next-book").attr('href');
+            console.log('LEFT ' + xDistance);
+            window.location.href = nextURL;
+        } else if (direction == 'left' && Math.abs(xDistance) < swipeTolerance) {
+            // $nextArrow.filter(':visible').css({
+            //     'right': (Math.abs(xDistance) * touchFactor) + 'px'
+            // });
+        }
+    });
+  };
+}
+
+var onTouchEnd = function(e) {
+    /*
+     * Clear swipe start position when swipe ends
+     */
+
+  if ($body.hasClass('modal-open')){
+    console.log("end");
+    $.each(e.originalEvent.changedTouches, function(i, touch) {
+        if (startTouch && touch.identifier === startTouch.identifier) {
+            startTouch = undefined;
+        }
+    });
+  };
+}
