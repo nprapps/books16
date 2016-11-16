@@ -615,9 +615,8 @@ var onTouchMove = function(e) {
 
         if (Math.abs(xDistance) > swipeTolerance) {
             if (!swipeDetected) {
+                console.log('initialize swipeDetected to the: ', direction);
                 swipeDetected = direction;
-            } else {
-                console.log('already detected a touchMove to the: ', swipeDetected);
             }
         }
     });
