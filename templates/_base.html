@@ -23,6 +23,7 @@
     <!-- <link rel="stylesheet" type="text/css" href="css/books14-font/css/books-2014.css" /> -->
     <!-- FONTS -->
     {% include '_fonts.html' %}
+    {{ CSS.render('css/rendered/fonts.min.css') }}
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/app.min.css') }}
@@ -108,7 +109,11 @@
     {{ JS.push('node_modules/signals/dist/signals.js') }}
     {{ JS.push('node_modules/hasher/dist/js/hasher.js') }}
     {{ JS.push('js/lib/jquery.unveil.js') }}
-    {{ JS.push('node_modules/clipboard/dist/clipboard.js') }}
+    {% if DEPLOYMENT_TARGET %}
+        <script src="js/lib/clipboard.min.js"></script>
+    {% else %}
+        {{ JS.push('node_modules/clipboard/dist/clipboard.js') }}
+    {% endif %}
     {% block extra_foot_js %}{% endblock extra_foot_js %}
     {{ JS.push('js/analytics.js')}}
     {{ JS.push('js/templates.js') }}

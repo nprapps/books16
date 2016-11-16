@@ -33,8 +33,8 @@ var startTouch;
 var completion = 1;
 var swipeTolerance = 80;
 var touchFactor = 1;
-let nextURL = null;
-let prevURL = null;
+var nextURL = null;
+var prevURL = null;
 
 /*
  * Scroll to a given element.

@@ -105,11 +105,19 @@ class JavascriptIncluder(Includer):
         src_paths = []
 
         for src in self.includes:
-            src_paths.append('www/%s' % src)
-
-            with codecs.open('www/%s' % src, encoding='utf-8') as f:
-                print '- compressing %s' % src
-                output.append(minify(f.read()))
+            try:
+                with codecs.open('www/%s' % src, encoding='utf-8') as f:
+                    print '- compressing %s' % src
+                    src_paths.append('www/%s' % src)
+                    output.append(minify(f.read()))
+            except IOError, e:
+                if src.startswith('node_modules'):
+                    with codecs.open(src, encoding='utf-8') as f:
+                        print '- compressing %s' % src
+                        src_paths.append(src)
+                        output.append(minify(f.read()))
+                else:
+                    raise e
 
         context = make_context()
         context['paths'] = src_paths
