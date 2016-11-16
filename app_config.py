@@ -103,6 +103,7 @@ except ImportError:
     pass
 
 # Provide a csv path for testing locally if DATA_GOOGLE_DOC_KEY fails
+LOCAL_CSV_PATH = None
 try:
     from local_settings import LOCAL_CSV_PATH
 except ImportError:
