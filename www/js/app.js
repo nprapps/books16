@@ -590,7 +590,7 @@ var onTouchStart = function(e) {
     if (!startTouch) {
         startTouch = $.extend({}, e.originalEvent.targetTouches[0]);
     }
-};
+  };
 }
 
 var onTouchMove = function(e) {
@@ -607,27 +607,27 @@ var onTouchMove = function(e) {
 
         var yDistance = touch.screenY - startTouch.screenY;
         var xDistance = touch.screenX - startTouch.screenX;
-        var direction = (yDistance > 0) ? 'up' : 'down';
+        var direction = (xDistance > 0) ? 'right' : 'left';
 
-        if (Math.abs(xDistance) < Math.abs(yDistance)) {
+        if (Math.abs(yDistance) < Math.abs(xDistance)) {
             e.preventDefault();
         }
 
-        if (direction == 'up' && yDistance > swipeTolerance) {
+        if (direction == 'right' && xDistance > swipeTolerance) {
             prevURL = $("#previous-book").attr('href');
-            console.log('UP ' + prevURL);
+            console.log('RIGHT ' + prevURL);
             window.location.href = prevURL;
-        } else if (direction == 'up' && yDistance < swipeTolerance) {
+        } else if (direction == 'right' && xDistance < swipeTolerance) {
             // $previousArrow.filter(':visible').css({
             //     'left': (xDistance * touchFactor) + 'px'
             // });
         }
 
-        if (direction == 'down' && Math.abs(yDistance) > swipeTolerance) {
+        if (direction == 'left' && Math.abs(xDistance) > swipeTolerance) {
             nextURL = $("#next-book").attr('href');
-            console.log('DOWN ' + nextURL);
+            console.log('LEFT ' + nextURL);
             window.location.href = nextURL;
-        } else if (direction == 'down' && Math.abs(yDistance) < swipeTolerance) {
+        } else if (direction == 'left' && Math.abs(xDistance) < swipeTolerance) {
             // $nextArrow.filter(':visible').css({
             //     'right': (Math.abs(xDistance) * touchFactor) + 'px'
             // });
