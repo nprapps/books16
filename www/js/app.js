@@ -553,6 +553,7 @@ $(function() {
     $(window).on('resize', resize);
 
     if (MOBILE){
+      console.log('GOGOGO');
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
       $body.on('touchend', onTouchEnd);
@@ -584,6 +585,7 @@ $(function() {
 
 var onTouchStart = function(e) {
   if ($body.hasClass('modal-open')){
+    console.log("start");
     /*
      * Capture start position when swipe initiated
      */
@@ -615,7 +617,7 @@ var onTouchMove = function(e) {
 
         if (direction == 'right' && xDistance > swipeTolerance) {
             prevURL = $("#previous-book").attr('href');
-            console.log('RIGHT ' + prevURL);
+            console.log('RIGHT ' + xDistance);
             window.location.href = prevURL;
         } else if (direction == 'right' && xDistance < swipeTolerance) {
             // $previousArrow.filter(':visible').css({
@@ -625,7 +627,7 @@ var onTouchMove = function(e) {
 
         if (direction == 'left' && Math.abs(xDistance) > swipeTolerance) {
             nextURL = $("#next-book").attr('href');
-            console.log('LEFT ' + nextURL);
+            console.log('LEFT ' + xDistance);
             window.location.href = nextURL;
         } else if (direction == 'left' && Math.abs(xDistance) < swipeTolerance) {
             // $nextArrow.filter(':visible').css({
@@ -642,6 +644,7 @@ var onTouchEnd = function(e) {
      */
 
   if ($body.hasClass('modal-open')){
+    console.log("end");
     $.each(e.originalEvent.changedTouches, function(i, touch) {
         if (startTouch && touch.identifier === startTouch.identifier) {
             startTouch = undefined;
