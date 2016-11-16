@@ -574,33 +574,6 @@ def load_images():
 
 
 @task
-def get_oclcs():
-    # Open the books JSON.
-    with open('www/static-data/books.json', 'rb') as readfile:
-        books = json.loads(readfile.read())
-
-    for book in books:
-        time.sleep(1)
-        if not book['oclc']:
-            url = 'http://xisbn.worldcat.org/webservices/xid/isbn/%s' % (
-                book['isbn'])
-            logger.info("url %s" % url)
-            r = requests.get(url, params={'method': 'getMetadata',
-                                          'format': 'json',
-                                          'fl': 'oclcnum'})
-            data = r.json()
-            logger.info(data)
-            if data.get('stat') == 'ok':
-                oclc = data['list'][0]['oclcnum'][0]
-                logger.info('isbn: %s, oclc: %s' % (book['isbn'], oclc))
-            else:
-                # import ipdb; ipdb.set_trace();
-                logger.warning('data: %s' % data)
-        else:
-            logger.info('book has already a oclc number: %s' % book['oclc'])
-
-
-@task
 def make_promotion_thumb():
     images_per_column = TOTAL_IMAGES / IMAGE_COLUMNS
     image_width = PROMOTION_IMAGE_WIDTH / IMAGE_COLUMNS
