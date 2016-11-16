@@ -29,6 +29,11 @@ var previous;
 var selected_tags = [];
 var first_hash = true;
 
+var startTouch;
+var completion = 1;
+var swipeTolerance = 40;
+var touchFactor = 1;
+
 /*
  * Scroll to a given element.
  */
@@ -544,6 +549,13 @@ $(function() {
     $share_modal.on('shown.bs.modal', on_show_share);
     $share_modal.on('hidden.bs.modal', on_hide_share);
     $(window).on('resize', resize);
+
+    if (MOBILE){
+      $body.on('touchstart', onTouchStart);
+      $body.on('touchmove', onTouchMove);
+      $body.on('touchend', onTouchEnd);
+    }
+
     // Set up the page.
     resize();
     $back_to_top.hide();
@@ -567,3 +579,69 @@ $(function() {
     _.delay(unveil_grid, 0);
 
 });
+
+var onTouchStart = function(e) {
+  if ($body.hasClass('modal-open')){
+    /*
+     * Capture start position when swipe initiated
+     */
+    if (!startTouch) {
+        startTouch = $.extend({}, e.originalEvent.targetTouches[0]);
+    }
+}
+}
+
+var onTouchMove = function(e) {
+    /*
+     * Track finger swipe
+     */
+
+  if ($body.hasClass('modal-open')){
+    $.each(e.originalEvent.changedTouches, function(i, touch) {
+        if (!startTouch || touch.identifier !== startTouch.identifier) {
+            return true;
+        }
+
+
+        var yDistance = touch.screenY - startTouch.screenY;
+        var xDistance = touch.screenX - startTouch.screenX;
+        var direction = (yDistance > 0) ? 'up' : 'down';
+
+        if (Math.abs(xDistance) < Math.abs(yDistance)) {
+            e.preventDefault();
+        }
+
+        if (direction == 'up' && yDistance > swipeTolerance) {
+            // lastSlideExitEvent = 'exit-swipe-right';
+            console.log('swiping up');
+        } else if (direction == 'up' && yDistance < swipeTolerance) {
+            // $previousArrow.filter(':visible').css({
+            //     'left': (xDistance * touchFactor) + 'px'
+            // });
+        }
+
+        if (direction == 'down' && Math.abs(yDistance) > swipeTolerance) {
+            // lastSlideExitEvent = 'exit-swipe-left';
+            console.log('swiping down');
+        } else if (direction == 'down' && Math.abs(yDistance) < swipeTolerance) {
+            // $nextArrow.filter(':visible').css({
+            //     'right': (Math.abs(xDistance) * touchFactor) + 'px'
+            // });
+        }
+    });
+  }
+}
+
+var onTouchEnd = function(e) {
+    /*
+     * Clear swipe start position when swipe ends
+     */
+
+  if ($body.hasClass('modal-open')){
+    $.each(e.originalEvent.changedTouches, function(i, touch) {
+        if (startTouch && touch.identifier === startTouch.identifier) {
+            startTouch = undefined;
+        }
+    });
+  }
+}
