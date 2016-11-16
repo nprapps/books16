@@ -638,19 +638,14 @@ var onTouchEnd = function(e) {
         if (swipeDetected) {
             if (swipeDetected === 'right' && previous) {
                 console.log('Swipe Right detected navigate to previous')
-                swipeDetected = null;
                 on_previous();
                 hasher.setHash('book', previous);
             } else if (swipeDetected === 'left' && next){
                 console.log('Swipe Left detected navigate to next')
-                swipeDetected = null;
                 on_next();
                 hasher.setHash('book', next);
             }
-            else {
-                console.error('should only detect left or right, saw: ', swipeDetected);
-                swipeDetected = null;
-            }
+            swipeDetected = null;
         }
     }
 }
