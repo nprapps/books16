@@ -31,8 +31,10 @@ var first_hash = true;
 
 var startTouch;
 var completion = 1;
-var swipeTolerance = 40;
+var swipeTolerance = 80;
 var touchFactor = 1;
+let nextURL = null;
+let prevURL = null;
 
 /*
  * Scroll to a given element.
@@ -588,7 +590,7 @@ var onTouchStart = function(e) {
     if (!startTouch) {
         startTouch = $.extend({}, e.originalEvent.targetTouches[0]);
     }
-}
+};
 }
 
 var onTouchMove = function(e) {
@@ -612,8 +614,9 @@ var onTouchMove = function(e) {
         }
 
         if (direction == 'up' && yDistance > swipeTolerance) {
-            // lastSlideExitEvent = 'exit-swipe-right';
-            console.log('swiping up');
+            nextURL = $("#next-book").attr('href');
+            console.log('UP ' + nextURL);
+            window.location.href = nextURL;
         } else if (direction == 'up' && yDistance < swipeTolerance) {
             // $previousArrow.filter(':visible').css({
             //     'left': (xDistance * touchFactor) + 'px'
@@ -621,15 +624,16 @@ var onTouchMove = function(e) {
         }
 
         if (direction == 'down' && Math.abs(yDistance) > swipeTolerance) {
-            // lastSlideExitEvent = 'exit-swipe-left';
-            console.log('swiping down');
+            prevURL = $("#previous-book").attr('href');
+            console.log('DOWN ' + prevURL);
+            window.location.href = prevURL;
         } else if (direction == 'down' && Math.abs(yDistance) < swipeTolerance) {
             // $nextArrow.filter(':visible').css({
             //     'right': (Math.abs(xDistance) * touchFactor) + 'px'
             // });
         }
     });
-  }
+  };
 }
 
 var onTouchEnd = function(e) {
@@ -643,5 +647,5 @@ var onTouchEnd = function(e) {
             startTouch = undefined;
         }
     });
-  }
+  };
 }
