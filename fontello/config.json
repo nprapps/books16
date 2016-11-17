@@ -101,6 +101,12 @@
       "css": "clipboard",
       "code": 61674,
       "src": "fontawesome"
+    },
+    {
+      "uid": "3c73d058e4589b65a8d959c0fc8f153d",
+      "css": "resize-horizontal",
+      "code": 59392,
+      "src": "fontawesome"
     }
   ]
 }

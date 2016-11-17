@@ -550,6 +550,7 @@ $(function() {
     $share_modal.on('shown.bs.modal', on_show_share);
     $share_modal.on('hidden.bs.modal', on_hide_share);
     $(window).on('resize', resize);
+    $('.modal-opener').on('click', instructEm);
 
     if (MOBILE){
       console.log('Touch Screen Detected');
@@ -648,3 +649,13 @@ var onTouchEnd = function(e) {
         }
     }
 }
+
+var instructEm = function(){
+  if ($('.instructable').hasClass('dontRepeat') == false){
+    $('.instructable').fadeTo('slow', 1);
+    $('.instructable').addClass('dontRepeat');
+    window.setTimeout(function(){
+      $('.instructable').fadeTo('slow', 0);
+    }, 2500);
+  }
+};

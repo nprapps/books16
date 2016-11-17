@@ -17,7 +17,6 @@
 {% block content %}
     <div class="book-container">
 
-
         <!-- <div class="top-row"> -->
             <div class="spacer">
                 <h4 class="hidden-xs">What would you<br> like to read?</h4>
@@ -110,6 +109,12 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="instructable visible-xs">
+  <p><i class="icon-resize-horizontal"></i></p>
+  <p class="instructions">Swipe to navigate</p>
+</div>
+
 <script type="text/javascript">
     window.BOOKS = {{ books_js|safe }};
     ANALYTICS.setupChartbeat();

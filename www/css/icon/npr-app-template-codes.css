@@ -1,4 +1,5 @@
 
+.icon-resize-horizontal:before { content: '\e800'; } /* '' */
 .icon-bank:before { content: '\e800'; } /* '' */
 .icon-left-open:before { content: '\e801'; } /* '' */
 .icon-right-open:before { content: '\e802'; } /* '' */
