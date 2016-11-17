@@ -570,7 +570,7 @@ def load_images():
         imagepath = '%s/%s.jpg' % (path, book['slug'])
 
         if os.path.exists(imagepath):
-            logger.warning('image already downloaded for: %s' % book['slug'])
+            logger.debug('image already downloaded for: %s' % book['slug'])
 
         # Write the image to www using the slug as the filename.
         with open(imagepath, 'wb') as writefile:
