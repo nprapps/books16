@@ -287,10 +287,12 @@ class Book(object):
         if self.isbn:
             try:
                 int(self.isbn[:8])
+                self.isbn13 = self._process_isbn13(self.isbn)
             except ValueError:
-                msg = 'ISBN is not valid'
-                raise Exception(msg)
-            self.isbn13 = self._process_isbn13(self.isbn)
+                # Take into account ebooks as the unique format
+                if self.isbn != kwargs['asin']:
+                    msg = 'ISBN is not valid'
+                    raise Exception(msg)
         else:
             msg = 'No ISBN'
             raise Exception(msg)
@@ -568,8 +570,7 @@ def load_images():
         imagepath = '%s/%s.jpg' % (path, book['slug'])
 
         if os.path.exists(imagepath):
-            logger.info('image already downloaded for: %s' % book['slug'])
-            continue
+            logger.warning('image already downloaded for: %s' % book['slug'])
 
         # Write the image to www using the slug as the filename.
         with open(imagepath, 'wb') as writefile:
