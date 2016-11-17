@@ -122,8 +122,8 @@ Run the project
 A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
 
 ```
-workon $PROJECT_SLUG
-python app.py
+workon books16
+fab app
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
@@ -275,7 +275,7 @@ Compile static assets
 Compile LESS to CSS, compile javascript templates to Javascript and minify all assets:
 
 ```
-workon books14
+workon books16
 fab render
 ```
 
@@ -295,14 +295,14 @@ Deploy to S3
 ------------
 
 ```
-fab staging master deploy
+fab staging deploy
 ```
 
 If you have already loaded books and cover images, you can skip this time-consuming step when
 deploying by running:
 
 ```
-fab staging master deploy:quick
+fab staging deploy:quick
 ```
 
 
@@ -313,24 +313,19 @@ The Google Analytics events tracked in this application are:
 
 |Category|Action|Label|Value|Notes|
 |--------|------|-----|-----|-----|
-|best-books-2015|tweet|`location`|||
-|best-books-2015|facebook|`location`|||
-|best-books-2015|pinterest|`location`|||
-|best-books-2015|email|`location`|||
-|best-books-2015|open-share-discuss|||
-|best-books-2015|close-share-discuss|||
-|best-books-2015|summary-copied|||
-|best-books-2015|view-review|`book_slug`|||
-|best-books-2015|navigate|`next` or `previous`|||
-|best-books-2015|toggle-view|`list` or `grid`|||
-|best-books-2015|clear-tags||||
-|best-books-2015|selected-tags|`comma separated list of tags`|||
-|best-books-2015|library|`book_slug`||Book slug of library click|
-|best-books-2015|amazon|`book_slug`||Book slug of amazon click|
-|best-books-2015|ibooks|`book_slug`||Book slug of ibooks click|
-|best-books-2015|indiebound|`book_slug`||Book slug of indiebound click|
-
-Note: The `library`, `amazon`, `ibooks`, and `indiebound` events, which track
-link clicks from individual reviews, were added after the project was deployed.
-They should only be used for analysis that starts on or after 12-5-2014.
-launch.
+|best-books-2016|tweet|`location`|||
+|best-books-2016|facebook|`location`|||
+|best-books-2016|pinterest|`location`|||
+|best-books-2016|email|`location`|||
+|best-books-2016|open-share-discuss|||
+|best-books-2016|close-share-discuss|||
+|best-books-2016|summary-copied|||
+|best-books-2016|view-review|`book_slug`|||
+|best-books-2016|navigate|`next` or `previous`|||
+|best-books-2016|toggle-view|`list` or `grid`|||
+|best-books-2016|clear-tags||||
+|best-books-2016|selected-tags|`comma separated list of tags`|||
+|best-books-2016|library|`book_slug`||Book slug of library click|
+|best-books-2016|amazon|`book_slug`||Book slug of amazon click|
+|best-books-2016|ibooks|`book_slug`||Book slug of ibooks click|
+|best-books-2016|indiebound|`book_slug`||Book slug of indiebound click|
