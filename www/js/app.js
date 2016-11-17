@@ -586,6 +586,7 @@ $(function() {
 var onTouchStart = function(e) {
   if ($body.hasClass('modal-open')){
     console.log("onTouchStart");
+    $('.instructable').fadeTo('slow', 0);
     /*
      * Capture start position when swipe initiated
      */
@@ -654,8 +655,5 @@ var instructEm = function(){
   if ($('.instructable').hasClass('dontRepeat') == false){
     $('.instructable').fadeTo('slow', 1);
     $('.instructable').addClass('dontRepeat');
-    window.setTimeout(function(){
-      $('.instructable').fadeTo('slow', 0);
-    }, 2500);
   }
 };
