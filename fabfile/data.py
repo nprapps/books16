@@ -540,9 +540,11 @@ def load_images():
 
         # Skip books with no title or ISBN.
         if book['title'] == "":
+            logger.warning('found book with no title')
             continue
 
         if 'isbn' not in book or book['isbn'] == "":
+            logger.warning('This book has no isbn: %s' % book['title'])
             continue
 
         # Construct the URL with secrets and the ISBN.
