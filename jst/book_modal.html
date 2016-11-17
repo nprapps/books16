@@ -40,7 +40,7 @@
                     <a href="http://www.worldcat.org/isbn/<%= book.isbn %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('library', '<%= book.slug %>');"><i class="icon icon-bank"></i>Find at your library</a>
                     <a href="http://www.amazon.com/dp/<%= book.isbn %>?tag=npr-5-20" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('amazon', '<%= book.slug %>');">Amazon</a>
                     <% if (book.hide_ibooks != 'TRUE') { %>
-                    <a href="https://itunes.apple.com/us/book/isbn<%= book.isbn13 %>?&at=11l79Y" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');">iBooks</a>
+                    <a href="https://itunes .apple.com/us/book/isbn<%= book.isbn13 %>?&at=11l79Y" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');">iBooks</a>
                     <% } %>
                     <a href="http://www.indiebound.org/book/<%= book.isbn13 %>?aff=NPR" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('indiebound', '<%= book.slug %>');">Independent&nbsp;Booksellers</a>
                 </p>
@@ -89,10 +89,10 @@
             </div>
             <div class="hide book-nav">
                 <% if (previous != null){ %>
-                <a href="#/book/<%= previous %>" class="btn btn-default modal-nav-buttons" id="previous-book">PREVIOUS BOOK</a>
+                <a href="#/book/<%= previous %>" class="btn btn-default modal-nav-buttons hidden-xs" id="previous-book">PREVIOUS BOOK</a>
                 <% } %>
                 <% if (next != null){ %>
-                <a href="#/book/<%= next %>" class="btn btn-default modal-nav-buttons" id="next-book">NEXT BOOK</a>
+                <a href="#/book/<%= next %>" class="btn btn-default modal-nav-buttons hidden-xs" id="next-book">NEXT BOOK</a>
                 <% } %>
             </div>
             <button type="button" class="btn btn-default" id="modal-close-btn" data-dismiss="modal">&times; <em>Close</em></button>
@@ -105,5 +105,3 @@
         <% } %>
     </a>
 </div>
-
-

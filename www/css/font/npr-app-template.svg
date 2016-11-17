@@ -6,6 +6,8 @@
 <font id="npr-app-template" horiz-adv-x="1000" >
 <font-face font-family="npr-app-template" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
 <missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="resize-horizontal" unicode="&#xe800;" d="M1000 350q0-14-11-25l-142-143q-11-11-26-11t-25 11-10 25v72h-572v-72q0-14-10-25t-25-11-25 11l-143 143q-11 11-11 25t11 25l143 143q10 11 25 11t25-11 10-25v-72h572v72q0 14 10 25t25 11 26-11l142-143q11-10 11-25z" horiz-adv-x="1000" />
+
 <glyph glyph-name="bank" unicode="&#xe800;" d="M536 850l535-214v-72h-71q0-14-11-25t-27-10h-852q-16 0-27 10t-12 25h-71v72z m-393-357h143v-429h71v429h143v-429h71v429h143v-429h72v429h143v-429h33q15 0 27-10t11-25v-36h-929v36q0 14 12 25t27 10h33v429z m890-536q16 0 27-11t11-25v-71h-1071v71q0 15 11 25t28 11h994z" horiz-adv-x="1142.9" />
 
 <glyph glyph-name="left-open" unicode="&#xe801;" d="M654 682l-297-296 297-297q10-10 10-25t-10-25l-93-93q-11-10-25-10t-25 10l-414 415q-11 10-11 25t11 25l414 414q10 11 25 11t25-11l93-93q10-10 10-25t-10-25z" horiz-adv-x="714.3" />

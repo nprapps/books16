@@ -1,7 +1,7 @@
 
 
 <div id="<%= book.slug %>" class="book card isotope-item <% _.each(book.tags, function(tag) { %>tag-<%= tag %> <% }) %> isotope-hidden no-touch" data-sort="<%= loop_index %>">
-    <a href="#/book/<%= book.slug %>">
+    <a href="#/book/<%= book.slug %>" class="modal-opener">
     <div class="book-outer-wrapper">
         <!-- Book Image -->
        <% if (book.teaser) { %>
@@ -11,4 +11,3 @@
     </div>
     </a>
 </div>
-                    

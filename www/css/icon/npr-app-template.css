@@ -1,11 +1,11 @@
 @font-face {
   font-family: 'npr-app-template';
-  src: url('../font/npr-app-template.eot?57359723');
-  src: url('../font/npr-app-template.eot?57359723#iefix') format('embedded-opentype'),
-       url('../font/npr-app-template.woff2?57359723') format('woff2'),
-       url('../font/npr-app-template.woff?57359723') format('woff'),
-       url('../font/npr-app-template.ttf?57359723') format('truetype'),
-       url('../font/npr-app-template.svg?57359723#npr-app-template') format('svg');
+  src: url('../font/npr-app-template.eot?29328786');
+  src: url('../font/npr-app-template.eot?29328786#iefix') format('embedded-opentype'),
+       url('../font/npr-app-template.woff2?29328786') format('woff2'),
+       url('../font/npr-app-template.woff?29328786') format('woff'),
+       url('../font/npr-app-template.ttf?29328786') format('truetype'),
+       url('../font/npr-app-template.svg?29328786#npr-app-template') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -15,7 +15,7 @@
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'npr-app-template';
-    src: url('../font/npr-app-template.svg?57359723#npr-app-template') format('svg');
+    src: url('../font/npr-app-template.svg?29328786#npr-app-template') format('svg');
   }
 }
 */
@@ -55,6 +55,7 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
  
+.icon-resize-horizontal:before { content: '\e800'; } /* '' */
 .icon-bank:before { content: '\e800'; } /* '' */
 .icon-left-open:before { content: '\e801'; } /* '' */
 .icon-right-open:before { content: '\e802'; } /* '' */
