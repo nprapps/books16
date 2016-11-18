@@ -553,9 +553,8 @@ $(function() {
     $(document).scroll(function(){
       checkOffset();
     });
-    $('.modal-opener').on('click', instructEm);
-
     if (MOBILE){
+      $('.modal-opener').on('click', instructEm);
       console.log('Touch Screen Detected');
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
