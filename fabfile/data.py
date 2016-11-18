@@ -604,13 +604,9 @@ def load_images():
 @task
 def make_promotion_thumb():
     images_per_column = TOTAL_IMAGES / IMAGE_COLUMNS
-    logger.info('images_per_column: %s' % images_per_column)
     image_width = PROMOTION_IMAGE_WIDTH / IMAGE_COLUMNS
-    logger.info('image_width: %s' % image_width)
     max_height = int(image_width * images_per_column * 1.5)
-    logger.info('max_height: %s' % max_height)
     thumb_size = [image_width, image_width]
-    logger.info('thumb_size: %s' % thumb_size)
     image = Image.new('RGB', [PROMOTION_IMAGE_WIDTH, max_height])
 
     # Open the books JSON.
@@ -644,11 +640,11 @@ def make_promotion_thumb():
         last_y = new_height
         total_height += new_height
 
-    logger.info('min_height: %s' % min_height)
-    final_width = int(min_height * 1.91)
-    logger.info('final_width: %s' % final_width)
+    min_prop_width = min_height * 16 / float(9)
+    # Make the proportion fit the highest full thumbnail width
+    # that complies with the proportion
+    final_width = int(min_prop_width / image_width) * 40
     cropped = image.crop((0, 0, final_width, min_height))
-    image.save('www/assets/img/covers_uncropped.jpg')
     cropped.save('www/assets/img/covers.jpg')
 
 
