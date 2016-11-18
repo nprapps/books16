@@ -1,3 +1,4 @@
+var COUNTER_THRESHOLD = 0;
 var MOBILE = Modernizr.touch;
 var SMALL = Modernizr.mq('only all and (max-width: 480px)');
 
@@ -128,7 +129,11 @@ var filter_books = function() {
         }
 
         $clear_tags.removeClass('hide');
-        $current_tag.find('#showing-span').text('Showing books tagged ');
+        var text = 'Showing books tagged ';
+        $current_tag.find('#showing-span').text(text);
+        if (remaining_books.length >= COUNTER_THRESHOLD) {
+            label += ' (' + remaining_books.length + ')';
+        }
         $current_tag.find('#tag-span').text(label);
         $books_grid.removeClass('filter-inactive');
 
@@ -138,7 +143,8 @@ var filter_books = function() {
     } else {
 
         $clear_tags.addClass('hide');
-        $current_tag.find('#showing-span').text('Showing all books');
+        var text = 'Showing all books ('+BOOKS.length+')';
+        $current_tag.find('#showing-span').text(text);
         $current_tag.find('#tag-span').text('');
         $books_grid.addClass('filter-inactive');
 
