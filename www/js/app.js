@@ -29,6 +29,12 @@ var previous;
 var selected_tags = [];
 var first_hash = true;
 
+var startTouch;
+var completion = 1;
+var swipeTolerance = 80;
+var touchFactor = 1;
+var swipeDetected = null;
+
 /*
  * Scroll to a given element.
  */
@@ -429,6 +435,22 @@ var toggle_books_list = function() {
     }
 };
 
+var setupClipboardjs = function() {
+    var clipboard = new Clipboard('.clippy');
+    clipboard.on('success', function(e) {
+        e.clearSelection();
+        $(e.trigger).tooltip('show');
+        setTimeout(hideTooltip, 1000);
+        ANALYTICS.trackEvent('summary-copied');
+        function hideTooltip() {
+            $(e.trigger).tooltip('hide');
+        }
+    });
+    clipboard.on('error', function(e) {
+        console.log('Press Press Ctrl+C to copy');
+    });
+}
+
 var on_next = function() {
     ANALYTICS.trackEvent('navigate', 'next');
 }
@@ -460,11 +482,6 @@ var on_hide_share = function() {
 var resize = function() {
     var height = $header.outerHeight();
     $large_ad.height(height);
-}
-
-var onClippyCopy = function(e) {
-    alert('Copied to your clipboard!');
-    ANALYTICS.trackEvent('summary-copied');
 }
 
 $(function() {
@@ -536,6 +553,14 @@ $(function() {
     $(document).scroll(function(){
       checkOffset();
     });
+    $('.modal-opener').on('click', instructEm);
+
+    if (MOBILE){
+      console.log('Touch Screen Detected');
+      $body.on('touchstart', onTouchStart);
+      $body.on('touchmove', onTouchMove);
+      $body.on('touchend', onTouchEnd);
+    }
 
     // Set up the page.
     resize();
@@ -547,11 +572,9 @@ $(function() {
         $tags[$tag.data('tag-slug')] = $tag;
     });
 
-    ZeroClipboard.config({ swfPath: 'js/lib/ZeroClipboard.swf' });
-    var clippy = new ZeroClipboard($(".clippy"));
-    clippy.on('ready', function(readyEvent) {
-        clippy.on('aftercopy', onClippyCopy);
-    });
+    // add Clipboard for deeplinks
+    $('[data-toggle="tooltip"]').tooltip();
+    setupClipboardjs();
 
     // Set up the hasher bits to grab the URL hash.
     hasher.changed.add(on_hash_changed);
@@ -562,6 +585,7 @@ $(function() {
     _.delay(unveil_grid, 0);
 
 });
+
 
 function checkOffset(){
   if ($(window).width() <= 640){
@@ -578,3 +602,78 @@ function checkOffset(){
   }
 
 }
+
+var onTouchStart = function(e) {
+  if ($body.hasClass('modal-open')){
+    console.log("onTouchStart");
+    $('.instructable').fadeTo('slow', 0);
+    /*
+     * Capture start position when swipe initiated
+     */
+    if (!startTouch) {
+        startTouch = $.extend({}, e.originalEvent.targetTouches[0]);
+    }
+  };
+}
+
+var onTouchMove = function(e) {
+    /*
+     * Track finger swipe
+     */
+
+  if ($body.hasClass('modal-open')){
+    console.log("onTouchMove");
+    $.each(e.originalEvent.changedTouches, function(i, touch) {
+        if (!startTouch || touch.identifier !== startTouch.identifier) {
+            return true;
+        }
+        var yDistance = touch.screenY - startTouch.screenY;
+        var xDistance = touch.screenX - startTouch.screenX;
+        var direction = (xDistance > 0) ? 'right' : 'left';
+
+        if (Math.abs(yDistance) < Math.abs(xDistance)) {
+            e.preventDefault();
+        }
+
+        if (Math.abs(xDistance) > swipeTolerance) {
+            if (!swipeDetected) {
+                console.log('initialize swipeDetected to the: ', direction);
+                swipeDetected = direction;
+            }
+        }
+    });
+  };
+}
+
+var onTouchEnd = function(e) {
+    /*
+     * Clear swipe start position when swipe ends
+     */
+    if ($body.hasClass('modal-open')){
+        console.log("onTouchEnd");
+        $.each(e.originalEvent.changedTouches, function(i, touch) {
+            if (startTouch && touch.identifier === startTouch.identifier) {
+                startTouch = undefined;
+            }
+        });
+        if (swipeDetected) {
+            if (swipeDetected === 'right' && previous) {
+                console.log('Swipe Right detected navigate to previous')
+                on_previous();
+                hasher.setHash('book', previous);
+            } else if (swipeDetected === 'left' && next){
+                console.log('Swipe Left detected navigate to next')
+                on_next();
+                hasher.setHash('book', next);
+            }
+            swipeDetected = null;
+        }
+    }
+}
+
+var instructEm = function(){
+  if ($('.instructable').hasClass('dontRepeat') == false){
+    $('.instructable').fadeTo('slow', 1);
+    $('.instructable').addClass('dontRepeat');
+  }
+};

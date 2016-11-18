@@ -1,7 +1,6 @@
 @import "less/lib/bootstrap/variables";
 @import "less/lib/bootstrap/mixins";
 @import "less/lib/prefixer";
-@import "less/comments.less";
 @import "less/variables.less";
 
 .modal-body.share{
@@ -57,7 +56,7 @@
     }
 
     .summary-text {
-        margin: 0;
+        margin: 0 5px 0 0;
         font-size: 11px;
         background-color: #fff;
         border: 1px solid #e3e3e3;
@@ -65,9 +64,15 @@
         color: #555;
         display: block;
         font-weight: normal;
+        vertical-align:middle;
+        width: 30em;
+        height: 4em;
+        resize: none;
         @media (min-width: @screen-sm) {
             display: inline-block;
             font-size: 12px;
+            width: 55em;
+            height: 3em;
         }
     }
 
@@ -77,34 +82,21 @@
         display: inline-block;
         font-weight: bold;
         margin-top: 5px;
-        padding: 5px;
+        padding: 10px;
         text-decoration: none;
         background-color: @wintergreen4;
         color: #fff;
         &:hover,
         &:focus {
-        color: #fff;
+            color: #fff;
+            background-color: @wintergreen3;
+            cursor: pointer;
         }
         .touch & {
             display: none;
         }
-
-
     }
 }
-
-.disqus-comments {
-    padding-top: 20px;
-    border-top: 1px solid #ddd;
-
-    h4 {
-        text-transform: uppercase;
-        font-size: 18px;
-        font-weight: normal;
-    }
-}
-
-
 
 //share section
 .share-section {

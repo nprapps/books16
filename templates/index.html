@@ -6,7 +6,6 @@
         <a class="npr" href="http://npr.org/books/"><img src="assets/books_logo.png" alt="NPR Books" /></a>
         <h1>{{ COPY.content.header_title }}</h1>
         <h2>{{ COPY.content.header_subhead }}</h2>
-        <p class="dedication">{{ COPY.content.dedication }}</p>
         <p class="byline">{{ COPY.attribution.byline }}</p>
         <button class="share btn btn-default" data-toggle="modal" data-backdrop="static" data-target="#share-modal"><i class="icon-export"></i> SHARE THIS APP</button>
     </div>
@@ -17,7 +16,6 @@
 
 {% block content %}
     <div class="book-container">
-
 
         <!-- <div class="top-row"> -->
             <div class="spacer">
@@ -108,6 +106,12 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<div class="instructable visible-xs">
+  <p><i class="icon-resize-horizontal"></i></p>
+  <p class="instructions">Swipe to navigate</p>
+</div>
+
 <script type="text/javascript">
     window.BOOKS = {{ books_js|safe }};
     ANALYTICS.setupChartbeat();

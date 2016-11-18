@@ -29,7 +29,7 @@
                 <% }); %></p> <% } %>
 
                 <!-- Book Description/Review -->
-                <% if (book.text && !book.html_text) { %><p class="text"><%= book.text %></p> 
+                <% if (book.text && !book.html_text) { %><p class="text"><%= book.text %></p>
                 <% } else if (book.text && book.html_text) { %><%= book.text %>
                 <% } %>
                 <% if(book.reviewer) { %><p class="reviewer">&mdash; <%= COPY.content.recommended_by %> <strong><% if (book['reviewer_link']) { %><a href="<%= book['reviewer_link'] %>" target="_blank"><%= book.reviewer %></a><% } else { %><%= book.reviewer %><% } %></strong><% if (book['reviewer_id']) { %>, <%= book['reviewer_id'] %><% } %></p> <% } %>
@@ -37,14 +37,16 @@
                 <!-- Purchase/Related Links -->
 
                 <p class="book-modal-links">
-                    <% if (book.oclc) { %>
-                    <a href="http://www.worldcat.org/oclc/<%= book.oclc %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('library', '<%= book.slug %>');"><i class="icon icon-bank"></i>Find at your library</a>
+                    <% if (book.isbn13 != null) { %>
+                    <a href="http://www.worldcat.org/isbn/<%= book.isbn %>" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('library', '<%= book.slug %>');"><i class="icon icon-bank"></i>Find at your library</a>
                     <% } %>
                     <a href="http://www.amazon.com/dp/<%= book.isbn %>?tag=npr-5-20" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('amazon', '<%= book.slug %>');">Amazon</a>
                     <% if (book.hide_ibooks != 'TRUE') { %>
                     <a href="https://itunes.apple.com/us/book/isbn<%= book.isbn13 %>?&at=11l79Y" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');">iBooks</a>
                     <% } %>
+                    <% if (book.isbn13 != null) { %>
                     <a href="http://www.indiebound.org/book/<%= book.isbn13 %>?aff=NPR" target="_blank" class="purchase-link shopping-cart" onclick="ANALYTICS.trackEvent('indiebound', '<%= book.slug %>');">Independent&nbsp;Booksellers</a>
+                    <% } %>
                 </p>
 
                 <% if (book.links) { %>
@@ -67,7 +69,7 @@
         <div class="modal-footer">
             <div class="social">
                 <p>Share Review:</p>
-                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.S3_BASE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2014 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
+                <a href="mailto:?body=<%= encodeURIComponent(APP_CONFIG.S3_BASE_URL + "#/book/" + book.slug + '\n\n"' + book.text.replace(/(<([^>]+)>)/ig,"") + '"\n\n--' + book.reviewer + ', ' + book.reviewer_id.replace(/(<([^>]+)>)/ig,"")) %>&amp;subject=<%= encodeURIComponent("NPR's best books of 2016 - " + book.title) %>" onclick="_gaq.push(['_trackEvent', '<%= APP_CONFIG.PROJECT_SLUG %>', 'email', '<%= book.slug %>']);">
                     <div class="share-button">
                         <span class="icon icon-mail"></span>
                     </div>
@@ -91,10 +93,10 @@
             </div>
             <div class="hide book-nav">
                 <% if (previous != null){ %>
-                <a href="#/book/<%= previous %>" class="btn btn-default modal-nav-buttons" id="previous-book">PREVIOUS BOOK</a>
+                <a href="#/book/<%= previous %>" class="btn btn-default modal-nav-buttons hidden-xs" id="previous-book">PREVIOUS BOOK</a>
                 <% } %>
                 <% if (next != null){ %>
-                <a href="#/book/<%= next %>" class="btn btn-default modal-nav-buttons" id="next-book">NEXT BOOK</a>
+                <a href="#/book/<%= next %>" class="btn btn-default modal-nav-buttons hidden-xs" id="next-book">NEXT BOOK</a>
                 <% } %>
             </div>
             <button type="button" class="btn btn-default" id="modal-close-btn" data-dismiss="modal">&times; <em>Close</em></button>
@@ -107,5 +109,3 @@
         <% } %>
     </a>
 </div>
-
-

@@ -17,6 +17,8 @@ import sys
 import string
 import xlrd
 import logging
+import time
+import shutil
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
@@ -27,6 +29,7 @@ from datetime import datetime
 from fabric.api import task
 from facebook import GraphAPI
 from twitter import Twitter, OAuth
+from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -262,7 +265,7 @@ class Book(object):
         Process all fields for row in the spreadsheet for serialization
         """
         self.title = self._process_text(kwargs['title'])
-        logger.info('Processing %s' % self.title)
+        logger.debug('Processing %s' % self.title)
         self.book_seamus_id = kwargs['book_seamus_id']
         self.slug = self._slugify(kwargs['title'])
 
@@ -270,7 +273,7 @@ class Book(object):
         self.hide_ibooks = kwargs['hide_ibooks']
         self.text = self._process_text(kwargs['text'])
         self.reviewer = self._process_text(kwargs['reviewer'])
-        self.reviewer_id = self._process_text(kwargs['reviewer ID'])
+        self.reviewer_id = self._process_text(kwargs['reviewer id'])
         self.reviewer_link = self._process_text(kwargs['reviewer link'])
 
         self.teaser = _make_teaser(self)
@@ -282,11 +285,19 @@ class Book(object):
 
         self.isbn = self._process_text(kwargs['isbn'])
         if self.isbn:
-            self.isbn13 = self._process_isbn13(self.isbn)
+            try:
+                int(self.isbn[:8])
+                self.isbn13 = self._process_isbn13(self.isbn)
+            except ValueError:
+                # Take into account ebooks as the unique format
+                if self.isbn != kwargs['asin']:
+                    msg = 'ISBN is not valid'
+                    raise Exception(msg)
         else:
-            print u'ERROR (%s): No ISBN' % self.title
-
-        self.oclc = self._process_text(kwargs['oclc'])
+            msg = 'No ISBN'
+            raise Exception(msg)
+        if kwargs['oclc']:
+            self.oclc = self._process_text(kwargs['oclc'])
         self.links = self._process_links(kwargs['book_seamus_id'])
         self.tags = self._process_tags(kwargs['tags'])
 
@@ -294,10 +305,10 @@ class Book(object):
         """
         Clean text field by replacing smart quotes and removing extra spaces
         """
-        value = value.replace('“','"').replace('”','"')
-        value = value.replace('’', "'")
+        value = value.replace(u'“','"').replace(u'”','"')
+        value = value.replace(u'’', "'")
         value = value.strip()
-        return unicode(value.decode('utf8'))
+        return value
 
     def _process_tags(self, value):
         """
@@ -317,7 +328,7 @@ class Book(object):
                 if tag_slug:
                     item_list.append(tag_slug)
                 else:
-                    print u'ERROR (%s): Unknown tag "%s"' % (self.title, item)
+                    logger.warning('%s: Unknown tag "%s"' % (self.title, item))
 
         # Sort items by order in spreadsheet
         copy = copytext.Copy(app_config.COPY_PATH)
@@ -337,7 +348,7 @@ class Book(object):
         Get links for a book from NPR.org book page
         """
         book_page_url = 'http://www.npr.org/%s' % value
-        logger.info('LOG (%s): Getting links from %s' % (self.title, book_page_url))
+        logger.debug('%s: Getting links from %s' % (self.title, book_page_url))
         r = requests.get(book_page_url)
         soup = BeautifulSoup(r.content, 'html.parser')
         items = soup.select('.storylist article.item')
@@ -360,9 +371,9 @@ class Book(object):
 
                 urls.append(link['url'])
                 item_list.append(link)
-                logger.info('LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
+                logger.debug('%s: Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
             else:
-                logger.info('LOG (%s): Duplicate link %s on %s' % (self.title, link['title'], link['url']))
+                logger.info('%s: Duplicate link %s on %s' % (self.title, link['title'], link['url']))
 
         first_read = soup.select('.readexcerpt a')
         if len(first_read):
@@ -372,7 +383,7 @@ class Book(object):
                 'title': '',
             }
             item_list.append(link)
-            logger.info('LOG (%s): Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
+            logger.debug('%s: Adding link %s - %s (%s)' % (self.title, link['category'], link['title'], link['url']))
 
         return item_list
 
@@ -408,10 +419,15 @@ def get_books_csv():
     """
     csv_url = 'https://docs.google.com/spreadsheets/d/%s/pub?gid=0&single=true&output=csv' % (
         app_config.DATA_GOOGLE_DOC_KEY)
+    logger.debug(csv_url)
     r = requests.get(csv_url)
-
-    with open('data/books.csv', 'wb') as writefile:
-        writefile.write(r.content)
+    if r.headers['content-type'] != 'text/csv':
+        logger.error('Unexpected Content-type: %s. Are you sure the spreadsheet is published as csv?' % r.headers['content-type'])
+        if app_config.LOCAL_CSV_PATH:
+            shutil.copy(app_config.LOCAL_CSV_PATH, 'data/books.csv')
+    else:
+        with open('data/books.csv', 'wb') as writefile:
+            writefile.write(r.content)
 
 def get_tags():
     """
@@ -440,8 +456,10 @@ def parse_books_csv():
     get_tags()
 
     # Open the CSV.
-    with open('data/books.csv', 'rb') as readfile:
-        books = list(csv.DictReader(readfile))
+    with open('data/books.csv', 'r') as readfile:
+        reader = CSVKitDictReader(readfile, encoding='utf-8')
+        reader.fieldnames = [name.strip().lower() for name in reader.fieldnames]
+        books = list(reader)
 
     logger.info("Start parse_books_csv(): %i rows." % len(books))
 
@@ -460,7 +478,13 @@ def parse_books_csv():
 
         # Init a book class, passing our data as kwargs.
         # The class constructor handles cleaning of the data.
-        b = Book(**book)
+        try:
+            b = Book(**book)
+        except Exception, e:
+            logger.error("Exception while parsing book: %s. Cause %s" % (
+                book['title'],
+                e))
+            continue
 
         for tag in b.tags:
             if not tags.get(tag):
@@ -482,6 +506,7 @@ def parse_books_csv():
             writer.writerow([slug, SLUGS_TO_TAGS[slug], count])
     logger.info("End.")
 
+
 @task
 def load_books():
     """
@@ -494,6 +519,7 @@ def load_books():
     logger.info("start parse_books_csv")
     parse_books_csv()
     logger.info("end load_books")
+
 
 @task
 def load_images():
@@ -516,9 +542,11 @@ def load_images():
 
         # Skip books with no title or ISBN.
         if book['title'] == "":
+            logger.warning('found book with no title')
             continue
 
         if 'isbn' not in book or book['isbn'] == "":
+            logger.warning('This book has no isbn: %s' % book['title'])
             continue
 
         # Construct the URL with secrets and the ISBN.
@@ -541,13 +569,16 @@ def load_images():
 
         imagepath = '%s/%s.jpg' % (path, book['slug'])
 
+        if os.path.exists(imagepath):
+            logger.debug('image already downloaded for: %s' % book['slug'])
+
         # Write the image to www using the slug as the filename.
         with open(imagepath, 'wb') as writefile:
             writefile.write(r.content)
 
         file_size = os.path.getsize(imagepath)
         if file_size < 10000:
-            print u'LOG (%s): Image not available from Baker and Taylor, using NPR book page' % book['title']
+            logger.info('(%s): Image not available from Baker and Taylor, using NPR book page' % book['title'])
             url = 'http://www.npr.org/%s' % book['book_seamus_id']
             npr_r = requests.get(url)
             soup = BeautifulSoup(npr_r.content, 'html.parser')
@@ -556,39 +587,17 @@ def load_images():
                     alt_img_url = 'http://media.npr.org/assets/bakertaylor/covers/t/the-three-body-problem/9780765377067_custom-d83e0e334f348e6c52fe5da588ec3448921af64f-s600-c85.jpg'
                 else:
                     alt_img_url = soup.select('.bookedition .image img')[0].attrs.get('src').replace('s99', 's400')
-                print 'LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url)
+                logger.info('LOG (%s): Getting alternate image from %s' % (book['title'], alt_img_url))
                 alt_img_resp = requests.get(alt_img_url)
-                with open(path, 'wb') as writefile:
+                with open(imagepath, 'wb') as writefile:
                     writefile.write(alt_img_resp.content)
             except IndexError:
-                print u'ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url)
+                logger.info('ERROR (%s): Image not available on NPR book page either (%s)' % (book['title'], url))
 
         image = Image.open(imagepath)
         image.save(imagepath, optimize=True, quality=75)
 
-    print "End."
-
-@task
-def get_oclcs():
-    # Open the books JSON.
-    with open('www/static-data/books.json', 'rb') as readfile:
-        books = json.loads(readfile.read())
-
-    for book in books:
-        if not book['oclc']:
-            url = 'http://xisbn.worldcat.org/webservices/xid/isbn/%s' % book['isbn']
-            r = requests.get(url, params={'method':'getMetadata', 'format':'json', 'fl':'oclcnum'})
-            response = r
-            data = r.json()
-            if data.get('stat') == 'ok':
-                oclc = data['list'][0]['oclcnum'][0]
-                #print u'LOG (%s): Found OCLC link %s' % (self.title, oclc_link)
-                print oclc
-            else:
-                #import ipdb; ipdb.set_trace();
-                print ''
-        else:
-            print book['oclc']
+    logger.info("Load Images End.")
 
 
 @task
@@ -635,3 +644,73 @@ def make_promotion_thumb():
     cropped = image.crop((0, 0, final_width, min_height))
 
     cropped.save('www/assets/img/covers.jpg')
+
+
+def _scrape_page(url):
+    """
+    scrape a book review archive page
+    return list of found reviews and the last date
+    """
+    reviews = []
+    r = requests.get(url)
+    if r.status_code == 200:
+        soup = BeautifulSoup(r.content, 'html.parser')
+        archivelist =  soup.find('div', class_="archivelist")
+        items = archivelist.findAll('article', class_="item")
+        logger.info(len(items))
+        for item in items:
+            review = {}
+            t = item.find('time')
+            if t:
+                published_date = t['datetime']
+            else:
+                published_date = None
+            logger.debug('published_date: %s' % published_date)
+            review['published_date'] = published_date
+            a = item.find('h2', class_='title').find('a')
+            if a:
+                book_review = a['href']
+            else:
+                book_review = None
+            logger.debug('review_link: %s' % book_review)
+            review['review_link'] = book_review
+            review['review_seamus_id'] = book_review.split('/')[6]
+            reviews.append(review)
+        return reviews, published_date
+    else:
+        return None, None
+
+@task
+def scrape_book_reviews():
+    """
+    Loads/reloads just the book data.
+    Does not save image files.
+    """
+    HEADER = ["published_date", "review_link", "review_seamus_id"]
+    logger.info("start scrape books")
+    reviews_url_tpl = 'http://www.npr.org/sections/book-reviews/archive?date=%s%s'
+    reviews = []
+    with open('data/book_reviews.csv', 'w') as fout:
+        writer = CSVKitDictWriter(fout, fieldnames=HEADER)
+        writer.writeheader()
+        for month in reversed(range(1, 13)):
+            # Initialize first iteration for the month
+            last_date = '2016-%s-31' % month
+            bits = last_date.split('-')
+            scrape_month = int(bits[1])
+            while scrape_month == month:
+                time.sleep(1)
+                new_date_suffix = '-%s-%s' % (bits[2], bits[0])
+                url = reviews_url_tpl % (scrape_month, new_date_suffix)
+                rows, last_date = _scrape_page(url)
+                if rows:
+                    reviews.extend(rows)
+                bits = last_date.split('-')
+                scrape_month = int(bits[1])
+                logger.info('last_date: %s' % last_date)
+        unique_reviews = [dict(t) for t in set([tuple(d.items()) for d in reviews])]
+        sorted_reviews = sorted(unique_reviews, key=lambda k: k['published_date'], reverse=True)
+        writer.writerows(sorted_reviews)
+
+
+    logger.info("end scrape books")

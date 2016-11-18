@@ -40,6 +40,7 @@ www/js/*.min.js
 www/js/templates.js
 www/js/app_config.js
 www/js/copy.js
+www/css/rendered/*.css
 confs/rendered/*
 data/copy.xls
 data/copy.xlsx
@@ -54,4 +55,7 @@ analytics.txt
 www/static-data/*
 data/books.csv
 data/tag-audit.csv
+data/book_reviews.csv
+data/test*.csv
 www/share/*
+local_settings.py

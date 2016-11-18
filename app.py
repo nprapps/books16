@@ -59,32 +59,34 @@ def share(slug):
         return 404
 
     featured_book['thumb'] = "%sassets/cover/%s.jpg" % (context['SHARE_URL'], featured_book['slug'])
-
     context['twitter_handle'] = 'nprbooks'
     context['book'] = featured_book
 
     return make_response(render_template('share.html', **context))
 
-@app.route('/comments/')
-def comments():
-    """
-    Full-page comments view.
-    """
-    return make_response(render_template('comments.html', **make_context()))
 
-@app.route('/widget.html')
-def widget():
+@app.route('/seamus')
+def seamus():
     """
-    Embeddable widget example page.
+    Preview for Seamus page
     """
-    return make_response(render_template('widget.html', **make_context()))
+    context = make_context()
 
-@app.route('/test_widget.html')
-def test_widget():
-    """
-    Example page displaying widget at different embed sizes.
-    """
-    return make_response(render_template('test_widget.html', **make_context()))
+    # Read the books JSON into the page.
+    with open('www/static-data/books.json', 'rb') as readfile:
+        books_data = json.load(readfile)
+        books = sorted(books_data, key=lambda k: k['title'])
+
+    # Harvest long tag names
+    for book in books:
+        tag_list = []
+        for tag in book['tags']:
+            tag_list.append(context['COPY']['tags'][tag]['value'])
+        book['tag_list'] = tag_list
+
+    context['books'] = books
+
+    return render_template('seamus-preview.html', **context)
 
 app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)
