@@ -19,6 +19,7 @@ import xlrd
 import logging
 import time
 import shutil
+from urllib import urlencode
 
 # Wrap sys.stdout into a StreamWriter to allow writing unicode. See http://stackoverflow.com/a/4546129
 sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
@@ -34,6 +35,8 @@ from csvkit.py2 import CSVKitDictReader, CSVKitDictWriter
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(app_config.LOG_LEVEL)
+
+ITUNES_URL_ID_REGEX = re.compile(r'id(\d+)\??')
 
 TAGS_TO_SLUGS = {}
 SLUGS_TO_TAGS = {}
@@ -247,7 +250,7 @@ class Book(object):
     slug = None
     tags = None
     book_seamus_id = None
-
+    itunes_id = None
     author_seamus_id = None
     author_seamus_headline = None
 
@@ -298,6 +301,9 @@ class Book(object):
             raise Exception(msg)
         if kwargs['oclc']:
             self.oclc = self._process_text(kwargs['oclc'])
+
+        # ISBN redirection is broken use search API to retrieve itunes_id
+        self.itunes_id = self._process_itunes_reference(kwargs['title'])
         self.links = self._process_links(kwargs['book_seamus_id'])
         self.tags = self._process_tags(kwargs['tags'])
 
@@ -412,6 +418,48 @@ class Book(object):
         slug = slug[:254]
         return slug
 
+    def _process_itunes_reference(self, title):
+        """
+        Use itunes search API
+        """
+        itunes_id = None
+        search_api_tpl = 'https://itunes.apple.com/search'
+        main_title = title.split(':')[0]
+        params = {
+            'term': main_title,
+            'country': 'US',
+            'media': 'ebook',
+            'attribute': 'titleTerm',
+            'explicit': 'No'
+        }
+        query_string = urlencode(params)
+
+        search_api_url = '%s?%s' % (search_api_tpl, query_string)
+        logger.info('url: %s' % search_api_url)
+
+        # Get search api results.
+        r = requests.get(search_api_url, params=params)
+        if r.status_code == 200:
+            results = r.json()
+            numResults = results['resultCount']
+            if numResults:
+                if numResults > 1:
+                    logger.warning('More than one result for %s, picking first' % main_title)
+                itunes_url = results['results'][0]['trackViewUrl']
+                m = ITUNES_URL_ID_REGEX.search(itunes_url)
+                if m:
+                    itunes_id = m.group(1)
+                    logger.info('itunes_id: %s' % itunes_id)
+                else:
+                    logger.warning('Did not find ibook id in %s' % itunes_url)
+            else:
+                logger.warning('no results found for %s' % main_title)
+        else:
+            logger.warning('did not receive a 200 when using itunes search api')
+        return itunes_id
+
+
+
 
 def get_books_csv():
     """
@@ -481,6 +529,7 @@ def parse_books_csv():
         # The class constructor handles cleaning of the data.
         try:
             b = Book(**book)
+            time.sleep(1)
         except Exception, e:
             logger.error("Exception while parsing book: %s. Cause %s" % (
                 book['title'],
@@ -499,6 +548,14 @@ def parse_books_csv():
     # Dump the list to JSON.
     with open('www/static-data/books.json', 'wb') as writefile:
         writefile.write(json.dumps(book_list))
+
+    with open('data/test-itunes-equiv.csv', 'w') as fout:
+        writer = CSVKitDictWriter(fout,
+                                  fieldnames=['title', 'isbn',
+                                              'isbn13', 'itunes_id'],
+                                  extrasaction='ignore')
+        writer.writeheader()
+        writer.writerows(book_list)
 
     with open('data/tag-audit.csv', 'w') as f:
         writer = csv.writer(f)
@@ -701,7 +758,7 @@ def scrape_book_reviews():
             bits = last_date.split('-')
             scrape_month = int(bits[1])
             while scrape_month == month:
-                time.sleep(1)
+                time.sleep(2)
                 new_date_suffix = '-%s-%s' % (bits[2], bits[0])
                 url = reviews_url_tpl % (scrape_month, new_date_suffix)
                 rows, last_date = _scrape_page(url)
