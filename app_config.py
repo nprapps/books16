@@ -117,6 +117,12 @@ LINK_CATEGORY_MAP = {
 }
 LINK_CATEGORY_DEFAULT = 'Feature'
 
+USE_ITUNES_ID = False
+try:
+    from local_settings import USE_ITUNES_ID
+except ImportError:
+    pass
+
 """
 SHARING
 """
