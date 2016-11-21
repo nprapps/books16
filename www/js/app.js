@@ -612,6 +612,7 @@ var onTouchStart = function(e) {
   if ($body.hasClass('modal-open')){
     console.log("onTouchStart");
     $('.instructable').fadeTo('slow', 0);
+    $('.instructable').removeClass('onTop');
     /*
      * Capture start position when swipe initiated
      */
@@ -678,6 +679,7 @@ var onTouchEnd = function(e) {
 
 var instructEm = function(){
   if ($('.instructable').hasClass('dontRepeat') == false){
+    $('.instructable').addClass('onTop');
     $('.instructable').fadeTo('slow', 1);
     $('.instructable').addClass('dontRepeat');
   }

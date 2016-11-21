@@ -1759,13 +1759,17 @@ p.browse {
   left: 50%;
   margin-left: -60px;
   top: 200px;
-  z-index: 3000;
+  z-index: -1;
   width: 120px;
   height: 120px;
   border-radius: 8px;
   background-color: rgba(128,128,128, .9);
   padding: 0;
   opacity: 0;
+
+  &.onTop{
+    z-index: 3000;
+  }
 
   p{
     text-align: center;
