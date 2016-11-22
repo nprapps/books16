@@ -107,6 +107,12 @@
       "css": "resize-horizontal",
       "code": 59392,
       "src": "fontawesome"
+    },
+    {
+      "uid": "9affc98d652b86628d650ee58dbf0357",
+      "css": "basket",
+      "code": 59449,
+      "src": "fontawesome"
     }
   ]
 }
