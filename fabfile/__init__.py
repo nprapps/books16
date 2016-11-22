@@ -50,7 +50,6 @@ bucket.
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
-logger.setLevel(app_config.LOG_LEVEL)
 
 @task
 def random_prod():
@@ -60,6 +59,7 @@ def random_prod():
     """
     env.settings = 'random_prod'
     app_config.configure_targets(env.settings)
+    logger.setLevel(app_config.LOG_LEVEL)
     env.hosts = app_config.SERVERS
 
 @task
@@ -69,6 +69,7 @@ def production():
     """
     env.settings = 'production'
     app_config.configure_targets(env.settings)
+    logger.setLevel(app_config.LOG_LEVEL)
     env.hosts = app_config.SERVERS
 
 @task
@@ -78,6 +79,7 @@ def staging():
     """
     env.settings = 'staging'
     app_config.configure_targets(env.settings)
+    logger.setLevel(app_config.LOG_LEVEL)
     env.hosts = app_config.SERVERS
 
 """

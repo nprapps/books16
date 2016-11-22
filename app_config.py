@@ -218,7 +218,7 @@ def configure_targets(deployment_target):
         SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = False
-        LOG_LEVEL = logging.INFO
+        LOG_LEVEL = logging.ERROR
         ASSETS_MAX_AGE = 86400
     elif deployment_target == 'random_prod':
         secrets = get_secrets()
@@ -231,7 +231,7 @@ def configure_targets(deployment_target):
         SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = False
-        LOG_LEVEL = logging.INFO
+        LOG_LEVEL = logging.ERROR
         ASSETS_MAX_AGE = 86400
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
