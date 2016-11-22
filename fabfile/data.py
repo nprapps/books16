@@ -89,6 +89,7 @@ def update():
     Load books and covers
     """
     #update_featured_social()
+    logger.setLevel(app_config.LOG_LEVEL)
     load_books()
     load_images()
     #make_promotion_thumb()

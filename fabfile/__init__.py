@@ -178,8 +178,9 @@ def deploy(quick=None, remote='origin', reload=False):
         servers.checkout_latest(remote)
 
         servers.fabcast('text.update')
-        servers.fabcast('assets.sync')
         servers.fabcast('data.update')
+        servers.fabcast('assets.sync')
+
 
         if app_config.DEPLOY_CRONTAB:
             servers.install_crontab()
