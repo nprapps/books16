@@ -126,7 +126,7 @@ except ImportError:
 """
 SHARING
 """
-SHARE_URL = '//%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
+SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
 
 """
 ADS
@@ -207,9 +207,24 @@ def configure_targets(deployment_target):
     global DEPLOYMENT_TARGET
     global ASSETS_MAX_AGE
     global LOG_LEVEL
+    global PROJECT_SLUG
+    global SHARE_URL
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
+        S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        SERVERS = PRODUCTION_SERVERS
+        SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
+        DEBUG = False
+        LOG_LEVEL = logging.INFO
+        ASSETS_MAX_AGE = 86400
+    elif deployment_target == 'random_prod':
+        secrets = get_secrets()
+        S3_BUCKET = PRODUCTION_S3_BUCKET
+        PROJECT_SLUG = '%s-%s' % (PROJECT_SLUG, secrets['RANDOM_SUFFIX'])
+        SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
         S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS

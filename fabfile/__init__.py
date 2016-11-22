@@ -3,6 +3,7 @@
 from datetime import datetime
 import json
 import os
+import logging
 
 from boto.s3.key import Key
 from fabric.api import local, require, settings, task
@@ -46,6 +47,21 @@ Changing environment requires a full-stack test.
 An environment points to both a server and an S3
 bucket.
 """
+
+logging.basicConfig(format=app_config.LOG_FORMAT)
+logger = logging.getLogger(__name__)
+logger.setLevel(app_config.LOG_LEVEL)
+
+@task
+def random_prod():
+    """
+    Run as though on production but with randomness added to the slug so
+    that it is not traceable.
+    """
+    env.settings = 'random_prod'
+    app_config.configure_targets(env.settings)
+    env.hosts = app_config.SERVERS
+
 @task
 def production():
     """
@@ -142,7 +158,12 @@ def deploy(quick=None, remote='origin', reload=False):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
     """
-    require('settings', provided_by=[production, staging])
+    require('settings', provided_by=[random_prod, production, staging])
+
+    if app_config.DEPLOYMENT_TARGET == 'production':
+        utils.confirm(
+            colored("You are trying to deploy to production.\nDo you know what you're doing?", "red")
+        )
 
     if app_config.DEPLOY_TO_SERVERS:
         require('branch', provided_by=[stable, master, branch])
@@ -200,7 +221,7 @@ def deploy(quick=None, remote='origin', reload=False):
 
 @task
 def check_timestamp():
-    require('settings', provided_by=[production, staging])
+    require('settings', provided_by=[random_prod, production, staging])
 
     bucket = utils.get_bucket(app_config.S3_BUCKET)
     k = Key(bucket)
@@ -215,7 +236,7 @@ def reset_browsers():
     """
     Deploy a timestamp so the client will reset their page. For bugfixes
     """
-    require('settings', provided_by=[production, staging])
+    require('settings', provided_by=[random_prod, production, staging])
 
     if not os.path.exists('www/live-data'):
         os.makedirs('www/live-data')
@@ -249,7 +270,7 @@ def shiva_the_destroyer():
     """
     Deletes the app from s3
     """
-    require('settings', provided_by=[production, staging])
+    require('settings', provided_by=[random_prod, production, staging])
 
     utils.confirm(
         colored("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?')" % app_config.DEPLOYMENT_TARGET, "red")
