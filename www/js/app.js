@@ -572,6 +572,8 @@ $(function() {
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
       $body.on('touchend', onTouchEnd);
+
+      $('.modal-nav-buttons').addClass('noShow');
     }
 
     // Set up the page.
