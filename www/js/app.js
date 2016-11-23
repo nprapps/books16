@@ -453,7 +453,14 @@ var setupClipboardjs = function() {
         }
     });
     clipboard.on('error', function(e) {
-        console.log('Press Press Ctrl+C to copy');
+        console.log('Your browser does not support execCommand. Press Ctrl/Cmd+C to copy');
+        $(e.trigger).attr('data-original-title','Press Ctrl/Cmd+C to copy');
+        $(e.trigger).tooltip('show');
+        setTimeout(hideTooltip, 1000);
+        ANALYTICS.trackEvent('summary-copied');
+        function hideTooltip() {
+            $(e.trigger).tooltip('hide');
+        }
     });
 }
 
