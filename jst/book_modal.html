@@ -108,6 +108,12 @@
             </div>
             <button type="button" class="btn btn-default" id="modal-close-btn" data-dismiss="modal">&times; <em>Close</em></button>
         </div>
+        <% if (MOBILE && !noRepeat){ %>
+        <div class="instructable">
+          <p><i class="icon-resize-horizontal"></i></p>
+          <p class="instructions">Swipe to navigate</p>
+        </div>
+        <% } %>
     </div>
 
     <a class="paddle" href="#/book/<%= next %>" id="next-book">
