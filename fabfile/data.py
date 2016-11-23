@@ -427,7 +427,7 @@ class Book(object):
         search_api_tpl = 'https://itunes.apple.com/search'
         main_title = title.split(':')[0]
         params = {
-            'term': main_title,
+            'term': main_title.encode('utf-8'),
             'country': 'US',
             'media': 'ebook',
             'attribute': 'titleTerm',
