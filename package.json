@@ -2,6 +2,7 @@
   "name": "app-template",
   "version": "1.0.0",
   "dependencies": {
+    "bootstrap": "^3.3.7",
     "clipboard": "^1.5.15",
     "hasher": "^1.2.0",
     "imagesloaded": "^4.1.1",
