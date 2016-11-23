@@ -325,7 +325,7 @@ var on_book_hash = function(slug) {
         book: book,
         next: next,
         previous: previous,
-        SMALL_MOBILE: (SMALL && MOBILE)
+        MOBILE: (MOBILE)
     }));
     $modal.scrollTop(0); // #174.
 
@@ -572,8 +572,6 @@ $(function() {
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
       $body.on('touchend', onTouchEnd);
-
-      $('.modal-nav-buttons').addClass('noShow');
     }
 
     // Set up the page.
