@@ -81,7 +81,7 @@ def _make_teaser(book):
     if text[i-1] in exclude:
         i -= 1
 
-    return '&#8220;' + text[:i] + ' ...&#8221;'
+    return text[:i] + ' ...'
 
 @task(default=True)
 def update():
