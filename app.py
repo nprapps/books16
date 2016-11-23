@@ -59,6 +59,15 @@ def share(slug):
         return 404
 
     featured_book['thumb'] = "%sassets/cover/%s.jpg" % (context['SHARE_URL'], featured_book['slug'])
+    try:
+        book_image = Image.open('www/assetsdss/cover/%s.jpg' % featured_book['slug'])
+        width, height = book_image.size
+        context['thumb_width'] = width
+        context['thumb_height'] = height
+    except IOError:
+        context['thumb_width'] = None
+        context['thumb_height'] = None
+
     context['twitter_handle'] = 'nprbooks'
     context['book'] = featured_book
 

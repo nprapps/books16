@@ -162,9 +162,9 @@ def deploy(quick=None, remote='origin', reload=False):
     """
     require('settings', provided_by=[random_prod, production, staging])
 
-    if app_config.DEPLOYMENT_TARGET == 'production':
+    if app_config.DEPLOYMENT_TARGET == 'production' or app_config.DEPLOYMENT_TARGET == 'random_prod':
         utils.confirm(
-            colored("You are trying to deploy to production.\nDo you know what you're doing?", "red")
+            colored("You are trying to deploy to production this project %s.\nDo you know what you're doing?" % app_config.PROJECT_SLUG, "red")
         )
 
     if app_config.DEPLOY_TO_SERVERS:
@@ -276,7 +276,7 @@ def shiva_the_destroyer():
     require('settings', provided_by=[random_prod, production, staging])
 
     utils.confirm(
-        colored("You are about to destroy everything deployed to %s for this project.\nDo you know what you're doing?')" % app_config.DEPLOYMENT_TARGET, "red")
+        colored("You are about to destroy everything deployed to %s for %s project.\nDo you know what you're doing?')" % (app_config.DEPLOYMENT_TARGET, app_config.PROJECT_SLUG), "red")
     )
 
     with settings(warn_only=True):

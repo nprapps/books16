@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 Project-wide application configuration.
@@ -20,6 +21,12 @@ NAMES
 # Project name to be used in urls
 # Use dashes, not underscores!
 PROJECT_SLUG = 'best-books-2016'
+
+# Allow override from local settings to test random_prod locally
+try:
+    from local_settings import PROJECT_SLUG
+except ImportError:
+    pass
 
 # Project name to be used in file paths
 PROJECT_FILENAME = 'books16'
@@ -212,7 +219,7 @@ def configure_targets(deployment_target):
 
     if deployment_target == 'production':
         S3_BUCKET = PRODUCTION_S3_BUCKET
-        S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BASE_URL = 'https://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -225,7 +232,7 @@ def configure_targets(deployment_target):
         S3_BUCKET = PRODUCTION_S3_BUCKET
         PROJECT_SLUG = '%s-%s' % (PROJECT_SLUG, secrets['RANDOM_SUFFIX'])
         SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
-        S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BASE_URL = 'https://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
         SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -235,7 +242,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 86400
     elif deployment_target == 'staging':
         S3_BUCKET = STAGING_S3_BUCKET
-        S3_BASE_URL = '//%s/%s' % (S3_BUCKET, PROJECT_SLUG)
+        S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
@@ -245,7 +252,7 @@ def configure_targets(deployment_target):
         ASSETS_MAX_AGE = 20
     else:
         S3_BUCKET = None
-        S3_BASE_URL = '//127.0.0.1:8000'
+        S3_BASE_URL = 'http://127.0.0.1:8000'
         S3_DEPLOY_URL = None
         SERVERS = []
         SERVER_BASE_URL = '//127.0.0.1:8001/%s' % PROJECT_SLUG
