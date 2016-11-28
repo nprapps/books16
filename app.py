@@ -109,3 +109,14 @@ else:
 # Catch attempts to run the app directly
 if __name__ == '__main__':
     print 'This command has been removed! Please run "fab app" instead!'
+
+
+@app.route('/coming-soon')
+def coming_soon():
+
+    context = make_context()
+    
+    with open('data/featured.json') as f:
+        context['featured'] = json.load(f)
+
+    return make_response(render_template('coming-soon.html', **context))
