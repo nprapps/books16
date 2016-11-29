@@ -42,10 +42,10 @@
                     <% } %>
                     <a href="http://www.amazon.com/dp/<%= book.isbn %>?tag=npr-5-20" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('amazon', '<%= book.slug %>');"><i class="icon icon-basket"></i>Amazon</a>
                     <% if (book.hide_ibooks != 'TRUE') { %>
+                        <a href="https://itunes.apple.com/us/book/isbn<%= book.isbn13 %>?at=11l79Y" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');"><i class="icon icon-basket"></i>iBooks</a>
+                    <% } else { %>
                         <% if ( APP_CONFIG.USE_ITUNES_ID && book.itunes_id != null) { %>
                             <a href="https://itunes.apple.com/us/book/id<%= book.itunes_id %>?at=11l79Y" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');"><i class="icon icon-basket"></i>iBooks</a>
-                        <% } else { %>
-                            <a href="https://itunes.apple.com/us/book/isbn<%= book.isbn13 %>?at=11l79Y" target="_blank" class="purchase-link" onclick="ANALYTICS.trackEvent('ibooks', '<%= book.slug %>');"><i class="icon icon-basket"></i>iBooks</a>
                         <% } %>
                     <% } %>
 
