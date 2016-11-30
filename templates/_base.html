@@ -14,15 +14,13 @@
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
     <!-- WEBFONTS -->
-    <!-- {{ JS.push('js/lib/webfont.js') }}
+    {{ JS.push('js/lib/webfont.js') }}
     {{ JS.push('js/fonts.js') }}
-    {{ JS.render('js/webfonts.min.js') }} -->
+    {{ JS.render('js/webfonts.min.js') }}
 
     <!-- CSS -->
     <!-- FONTS -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/books14-font/css/books-2014.css" /> -->
-    <!-- FONTS -->
-    {% include '_fonts.html' %}
+    {{ CSS.push('www/css/icon/npr-app-template.css') }}
     {{ CSS.render('css/rendered/fonts.min.css') }}
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}

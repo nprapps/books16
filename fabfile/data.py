@@ -304,7 +304,8 @@ class Book(object):
             self.oclc = self._process_text(kwargs['oclc'])
 
         # ISBN redirection is broken use search API to retrieve itunes_id
-        self.itunes_id = self._process_itunes_reference(kwargs['title'])
+        # added the column to the spreadsheet so ignore if it is already calculated
+        self.itunes_id = kwargs['itunes_id']
         self.links = self._process_links(kwargs['book_seamus_id'])
         self.tags = self._process_tags(kwargs['tags'])
 
@@ -423,6 +424,7 @@ class Book(object):
         """
         Use itunes search API
         """
+        time.sleep(1)
         itunes_id = None
         search_api_tpl = 'https://itunes.apple.com/search'
         main_title = title.split(':')[0]
@@ -530,7 +532,6 @@ def parse_books_csv():
         # The class constructor handles cleaning of the data.
         try:
             b = Book(**book)
-            time.sleep(1)
         except Exception, e:
             logger.error("Exception while parsing book: %s. Cause %s" % (
                 book['title'],
