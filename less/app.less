@@ -1823,3 +1823,69 @@ p.browse {
   }
 
 }
+
+//PROMO PAGE
+
+.promoContainer{
+  background: @pine url('../assets/books-header.png');
+  padding: 50px;
+  height: 90vh;
+
+  .promoHeader{
+    font-size: 5em;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 20px;
+    max-width: 900px;
+  }
+
+  .promoText{
+    font-size: 1.3em;
+    color:#fff;
+    max-width: 900px;
+    margin-bottom: 30px;
+  }
+}
+
+.promoLinksContainer{
+
+  ul{
+    padding: 0;
+    margin-bottom: 50px;
+
+    .promoLink{
+      display: inline-block;
+
+
+      a{
+
+        &.btn-default{
+          background-color: #fff;
+          font-size: 2.3em;
+          padding: 0 15px;
+        }
+
+        &.btn-default:hover,
+        &.btn-default:focus{
+          color: @pine;
+          background: @dark-gray;
+        }
+      }
+
+      a:hover{
+
+      }
+
+    }
+
+  }
+}
+
+
+@media screen and (max-width: 767px){
+  .promoContainer{
+    height: auto;
+    padding: 15px;
+  }
+}
