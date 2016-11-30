@@ -249,7 +249,7 @@ var on_tag_hash = function(tags) {
  * New book hash url and previous/next buttons.
  */
 var on_book_hash = function(slug) {
-    bookPos = $('body').scrollTop();
+    bookPos = window.pageYOffset;
     if (bookPos !== 0){
       bodyPosition = bookPos;
     }
