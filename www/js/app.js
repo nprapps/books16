@@ -405,7 +405,7 @@ var on_book_modal_closed = function() {
          */
         hasher.setHash('_');
 
-        $('body').scrollTo(bodyPosition);
+        $('body').scrollTo(bodyPosition, { duration:1000 });
     }
 
     return true;
