@@ -12,13 +12,15 @@
 @yellow-light: #FFD34E;
 @yellow-dark: #DB9E36;
 
-body.modal-open {
-    margin-right: 0;
-    // Fix for iOS safari scroll bug
-    // https://github.com/twbs/bootstrap/issues/14839
-    position: fixed;
-    width: 100%;
-    overflow: hidden;
+@media screen and (max-width: 767px){
+  body.modal-open {
+      margin-right: 0;
+      // Fix for iOS safari scroll bug
+      // https://github.com/twbs/bootstrap/issues/14839
+      position: fixed;
+      width: 100%;
+      overflow: hidden;
+  }
 }
 
 nav, .col-md-12, header, footer {

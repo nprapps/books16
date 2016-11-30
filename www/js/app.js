@@ -37,6 +37,8 @@ var swipeTolerance = 80;
 var touchFactor = 1;
 var swipeDetected = null;
 
+var bodyPosition = 0;
+
 /*
  * Scroll to a given element.
  */
@@ -247,6 +249,10 @@ var on_tag_hash = function(tags) {
  * New book hash url and previous/next buttons.
  */
 var on_book_hash = function(slug) {
+    bookPos = $('body').scrollTop();
+    if (bookPos !== 0){
+      bodyPosition = bookPos;
+    }
 
     // Get rid of the old modal.
     // They smell so musty.
@@ -397,9 +403,12 @@ var on_book_modal_closed = function() {
          * closing the modal.
          */
         hasher.setHash('_');
+
+        $('body').scrollTo(bodyPosition, { duration:1000 });
     }
 
     return true;
+
 };
 
 // Never relayout the grid more than twice a second
