@@ -1163,13 +1163,17 @@ h1 + #story-meta { margin-top: -11px; }
         margin-bottom: @line-height-computed / 2;
     }
 
-    .author, .reviewer {
+    .author, .reviewer, .external-link {
         color: #999;
         font-size: 13px;
         line-height: 1.3em;
     }
 
     .reviewer {
+        margin-bottom: @line-height-computed;
+    }
+
+    .external-link:last-child {
         margin-bottom: @line-height-computed;
     }
 
@@ -1190,6 +1194,19 @@ h1 + #story-meta { margin-top: -11px; }
     ul {
         padding-left: 20px;
         margin-top: @line-height-computed;
+    }
+
+    .external-links {
+        padding-left: 20px;
+        margin-top: @line-height-computed / 2;
+    }
+
+    .external-links-intro {
+        //margin-top: @line-height-computed / 2;
+
+        &.first {
+            margin-top: @line-height-computed;
+        }
     }
 }
 

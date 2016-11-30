@@ -51,7 +51,7 @@
                     <% } %>
                 </p>
 
-                <% if (book.links) { %>
+                <% if (book.links.length > 0) { %>
                 <ul>
                     <% _.each(book.links, function(link) { %>
                     <li class="book-modal-links">
@@ -64,6 +64,13 @@
                     </li>
                     <% }) %>
                 </ul>
+                <% } %>
+                <!-- External links -->
+                <% if(book.external_links.length > 0) { %>
+                    <p class="external-links-intro<% if (!book.links.length) { %> first<% } %>"><%= COPY.content.external_links_intro %></p>
+                    <ul class="external-links">
+                        <% _.each(book.external_links, function(link, index, list){ %><%= link %><% }); %>
+                    </ul>
                 <% } %>
             </div>
         </div>

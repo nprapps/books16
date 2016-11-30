@@ -307,6 +307,7 @@ class Book(object):
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
         self.links = self._process_links(kwargs['book_seamus_id'])
+        self.external_links = self._process_external_links(kwargs['external links html'])
         self.tags = self._process_tags(kwargs['tags'])
 
     def _process_text(self, value):
@@ -350,6 +351,17 @@ class Book(object):
                 ordered_items.append(slug)
 
         return ordered_items
+
+    def _process_external_links(self, value):
+        """
+        Turn comma separated string of tags into list
+        """
+        item_list = []
+
+        for item in value.split(','):
+            if item != '':
+                item_list.append(item)
+        return item_list
 
     def _process_links(self, value):
         """
