@@ -253,7 +253,6 @@ var on_book_hash = function(slug) {
     if (bookPos !== 0){
       bodyPosition = bookPos;
     }
-    console.log('BODY AT: ' + bodyPosition);
 
     // Get rid of the old modal.
     // They smell so musty.
