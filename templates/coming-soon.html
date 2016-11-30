@@ -14,15 +14,13 @@
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
 
     <!-- WEBFONTS -->
-    <!-- {{ JS.push('js/lib/webfont.js') }}
+    {{ JS.push('js/lib/webfont.js') }}
     {{ JS.push('js/fonts.js') }}
-    {{ JS.render('js/webfonts.min.js') }} -->
+    {{ JS.render('js/webfonts.min.js') }}
 
     <!-- CSS -->
     <!-- FONTS -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/books14-font/css/books-2014.css" /> -->
-    <!-- FONTS -->
-    {% include '_fonts.html' %}
+    {{ CSS.push('www/css/icon/npr-app-template.css') }}
     {{ CSS.render('css/rendered/fonts.min.css') }}
     {{ CSS.push('less/app.less') }}
     {% block extra_css %}{% endblock extra_css %}
@@ -90,31 +88,6 @@
         </div>
     </footer>
     {% endblock outer_content %}
-
-    {% include '_share_modal.html' %}
-
-    <!-- JS -->
-    <script src="js/lib/clipboard.min.js"></script>
-    {{ JS.push('js/app_config.js') }}
-    {{ JS.push('js/lib/modernizr.js') }}
-    {{ JS.push('js/copy.js') }}
-    {{ JS.push('js/console.js') }}
-    {{ JS.push('js/lib/jquery-2.1.1.js') }}
-    {{ JS.push('node_modules/isotope-layout/dist/isotope.pkgd.js') }}
-    {{ JS.push('node_modules/imagesloaded/imagesloaded.pkgd.js') }}
-    {{ JS.push('js/lib/html5.js') }}
-    {{ JS.push('js/lib/jquery.scrollTo-1.4.13.js') }}
-    {{ JS.push('node_modules/underscore/underscore.js') }}
-    {{ JS.push('node_modules/bootstrap/dist/js/bootstrap.js') }}
-    {{ JS.push('node_modules/signals/dist/signals.js') }}
-    {{ JS.push('node_modules/hasher/dist/js/hasher.js') }}
-    {{ JS.push('js/lib/jquery.unveil.js') }}
-    {% block extra_foot_js %}{% endblock extra_foot_js %}
-    {{ JS.push('js/analytics.js')}}
-    {{ JS.push('js/templates.js') }}
-    {{ JS.push('js/app.js') }}
-    {{ JS.render('js/app-footer.min.js') }}
-
 
 </body>
 </html>

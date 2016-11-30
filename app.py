@@ -97,6 +97,13 @@ def seamus():
 
     return render_template('seamus-preview.html', **context)
 
+
+@app.route('/coming-soon')
+def coming_soon():
+
+    context = make_context()
+    return make_response(render_template('coming-soon.html', **context))
+
 app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)
 
@@ -109,14 +116,3 @@ else:
 # Catch attempts to run the app directly
 if __name__ == '__main__':
     print 'This command has been removed! Please run "fab app" instead!'
-
-
-@app.route('/coming-soon')
-def coming_soon():
-
-    context = make_context()
-    
-    with open('data/featured.json') as f:
-        context['featured'] = json.load(f)
-
-    return make_response(render_template('coming-soon.html', **context))
