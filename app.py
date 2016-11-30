@@ -98,7 +98,7 @@ def seamus():
     return render_template('seamus-preview.html', **context)
 
 
-@app.route('/coming-soon')
+@app.route('/coming-soon.html')
 def coming_soon():
 
     context = make_context()
