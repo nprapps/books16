@@ -503,7 +503,7 @@ def get_tags():
     sheet = book.sheet_by_name('tags')
 
     for i in range(1, sheet.nrows):
-        slug, tag = sheet.row_values(i)
+        slug, tag, title, desc, img = sheet.row_values(i)
 
         slug = slug.strip()
         tag = tag.replace(u'’', "'").strip()
