@@ -503,7 +503,8 @@ def get_tags():
     sheet = book.sheet_by_name('tags')
 
     for i in range(1, sheet.nrows):
-        slug, tag = sheet.row_values(i)
+        # The tag spreadsheet has more than key, value now so unpack correspondigly
+        slug, tag = sheet.row_values(i)[0:2]
 
         slug = slug.strip()
         tag = tag.replace(u'’', "'").strip()
@@ -575,7 +576,7 @@ def parse_books_csv():
         writer = csv.writer(f)
         writer.writerow(['tag', 'slug', 'count'])
         for slug, count in tags.items():
-            writer.writerow([slug, SLUGS_TO_TAGS[slug], count])
+            writer.writerow([SLUGS_TO_TAGS[slug], slug, count])
     logger.info("End.")
 
 

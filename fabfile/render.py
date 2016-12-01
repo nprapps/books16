@@ -11,6 +11,7 @@ from fabric.api import local, task
 
 import app
 import json
+import csv
 
 def _fake_context(path):
     """
@@ -153,7 +154,26 @@ def render_all():
                     # NB: Flask response object has utf-8 encoded the data
                     with open(filename, 'w') as f:
                         f.write(content)
-            else: 
+            elif rule_string.startswith('/tag_share'):
+                with open('data/tag-audit.csv', 'r') as readfile:
+                    tags = list(csv.DictReader(readfile))
+                for tag in tags:
+                    filename = 'www/tag_share/%s.html' % tag['slug']
+                    print "will make %s" % filename
+                    dirname = os.path.dirname(filename)
+
+                    if not (os.path.exists(dirname)):
+                        os.makedirs(dirname)
+
+                    content = view(tag['slug']).data
+
+                    compiled_includes = g.compiled_includes
+
+                    # Write rendered view
+                    # NB: Flask response object has utf-8 encoded the data
+                    with open(filename, 'w') as f:
+                        f.write(content)
+            else:
                 content = view().data
 
                 compiled_includes = g.compiled_includes

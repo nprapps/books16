@@ -60,7 +60,7 @@ def share(slug):
 
     featured_book['thumb'] = "%sassets/cover/%s.jpg" % (context['SHARE_URL'], featured_book['slug'])
     try:
-        book_image = Image.open('www/assetsdss/cover/%s.jpg' % featured_book['slug'])
+        book_image = Image.open('www/assets/cover/%s.jpg' % featured_book['slug'])
         width, height = book_image.size
         context['thumb_width'] = width
         context['thumb_height'] = height
@@ -72,6 +72,40 @@ def share(slug):
     context['book'] = featured_book
 
     return make_response(render_template('share.html', **context))
+
+
+@app.route('/tag_share/<slug>.html')
+def tag_share(slug):
+    featured_tag = None
+    context = make_context()
+
+    tags = context['COPY']['tags']
+
+    for tag in tags:
+        if tag['key'] == slug:
+            featured_tag = tag
+            break
+
+    print featured_tag['img']
+    if not featured_tag:
+        return 404
+
+    context['tag_thumb'] = "%sassets/tag/%s.jpg" % (context['SHARE_URL'],
+                                                    featured_tag['img'])
+
+    try:
+        book_image = Image.open('www/assets/tag/%s.jpg' % featured_tag['img'])
+        width, height = book_image.size
+        context['thumb_width'] = width
+        context['thumb_height'] = height
+    except IOError:
+        context['thumb_width'] = None
+        context['thumb_height'] = None
+
+    context['twitter_handle'] = 'nprbooks'
+    context['tag'] = featured_tag
+
+    return make_response(render_template('tag_share.html', **context))
 
 
 @app.route('/seamus')
