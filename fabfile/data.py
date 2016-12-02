@@ -42,9 +42,9 @@ TAGS_TO_SLUGS = {}
 SLUGS_TO_TAGS = {}
 
 # Promotion image constants
-IMAGE_COLUMNS = 30
-TOTAL_IMAGES = 313
-PROMOTION_IMAGE_WIDTH = 1200
+IMAGE_COLUMNS = 26
+TOTAL_IMAGES = 310
+PROMOTION_IMAGE_WIDTH = 3000
 
 def _make_teaser(book):
     """
@@ -715,9 +715,10 @@ def make_promotion_thumb():
     min_prop_width = min_height * 16 / float(9)
     # Make the proportion fit the highest full thumbnail width
     # that complies with the proportion
-    final_width = int(min_prop_width / image_width) * 40
+    final_width = int(min_prop_width / image_width) * image_width
     cropped = image.crop((0, 0, final_width, min_height))
-    cropped.save('www/assets/img/covers.jpg')
+    # via http://stackoverflow.com/questions/1405602/how-to-adjust-the-quality-of-a-resized-image-in-python-imaging-library
+    cropped.save('www/assets/img/covers.jpg', quality=95)
 
 
 def _scrape_page(url):

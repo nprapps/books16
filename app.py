@@ -86,7 +86,6 @@ def tag_share(slug):
             featured_tag = tag
             break
 
-    print featured_tag['img']
     if not featured_tag:
         return 404
 
