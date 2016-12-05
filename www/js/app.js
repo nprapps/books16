@@ -1,4 +1,7 @@
 var COUNTER_THRESHOLD = 0;
+// Isnturctable config times
+var INSTRUCTABLE_DELAY_TIME = 2000;
+var INSTRUCTABLE_FADE_TIME = 600;
 var MOBILE = Modernizr.touch;
 var SMALL = Modernizr.mq('only all and (max-width: 480px)');
 
@@ -29,7 +32,7 @@ var next;
 var previous;
 var selected_tags = [];
 var first_hash = true;
-var noRepeat = null;
+var noRepeat = false;
 
 var startTouch;
 var completion = 1;
@@ -335,9 +338,11 @@ var on_book_hash = function(slug) {
         MOBILE: (MOBILE)
     }));
     $modal.scrollTop(0); // #174.
-
     // Modals should be modaled whenever modalable.
     $modal.modal();
+
+    $('.instructable').delay(INSTRUCTABLE_DELAY_TIME).fadeOut(INSTRUCTABLE_FADE_TIME);
+    noRepeat = true;
 
     // And hide the "back to the top" button.
     $back_to_top.hide();
@@ -626,12 +631,11 @@ function checkOffset(){
 
 var onTouchStart = function(e) {
   if ($body.hasClass('modal-open')){
-    console.log("onTouchStart");
-    $('.instructable').hide();
-    noRepeat = 'dont repeat';
     /*
      * Capture start position when swipe initiated
      */
+    $('.instructable').hide();
+    noRepeat = true;
     if (!startTouch) {
         startTouch = $.extend({}, e.originalEvent.targetTouches[0]);
     }
@@ -644,7 +648,6 @@ var onTouchMove = function(e) {
      */
 
   if ($body.hasClass('modal-open')){
-    console.log("onTouchMove");
     $.each(e.originalEvent.changedTouches, function(i, touch) {
         if (!startTouch || touch.identifier !== startTouch.identifier) {
             return true;
@@ -672,7 +675,6 @@ var onTouchEnd = function(e) {
      * Clear swipe start position when swipe ends
      */
     if ($body.hasClass('modal-open')){
-        console.log("onTouchEnd");
         $.each(e.originalEvent.changedTouches, function(i, touch) {
             if (startTouch && touch.identifier === startTouch.identifier) {
                 startTouch = undefined;
