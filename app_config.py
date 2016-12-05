@@ -247,7 +247,7 @@ def configure_targets(deployment_target):
         SERVERS = STAGING_SERVERS
         SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
-        DEBUG = True
+        DEBUG = False
         LOG_LEVEL = logging.INFO
         ASSETS_MAX_AGE = 20
     else:
