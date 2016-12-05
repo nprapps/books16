@@ -4,6 +4,7 @@ var INSTRUCTABLE_DELAY_TIME = 2000;
 var INSTRUCTABLE_FADE_TIME = 600;
 var MOBILE = Modernizr.touch;
 var SMALL = Modernizr.mq('only all and (max-width: 480px)');
+var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 var $body;
 var $content;
@@ -586,6 +587,9 @@ $(function() {
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
       $body.on('touchend', onTouchEnd);
+    }
+    if (iOS){
+      $("#summary-text").addClass('iosText');
     }
 
     // Set up the page.
