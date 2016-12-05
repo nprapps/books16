@@ -587,6 +587,7 @@ $(function() {
       $body.on('touchstart', onTouchStart);
       $body.on('touchmove', onTouchMove);
       $body.on('touchend', onTouchEnd);
+      $(".review").addClass('noHover');
     }
     if (iOS){
       $("#summary-text").addClass('iosText');
