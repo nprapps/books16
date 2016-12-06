@@ -306,7 +306,11 @@ class Book(object):
         # ISBN redirection is broken use search API to retrieve itunes_id
         # added the column to the spreadsheet so ignore if it is already calculated
         self.itunes_id = kwargs['itunes_id']
-        self.links = self._process_links(kwargs['book_seamus_id'])
+        if (kwargs['book_seamus_id']):
+            # Only search for links if there's a seamus ID
+            self.links = self._process_links(kwargs['book_seamus_id'])
+        else:
+            self.links = []
         self.external_links = self._process_external_links(kwargs['external links html'])
         self.tags = self._process_tags(kwargs['tags'])
 
@@ -719,73 +723,3 @@ def make_promotion_thumb():
     cropped = image.crop((0, 0, final_width, min_height))
     # via http://stackoverflow.com/questions/1405602/how-to-adjust-the-quality-of-a-resized-image-in-python-imaging-library
     cropped.save('www/assets/img/covers.jpg', quality=95)
-
-
-def _scrape_page(url):
-    """
-    scrape a book review archive page
-    return list of found reviews and the last date
-    """
-    reviews = []
-    r = requests.get(url)
-    if r.status_code == 200:
-        soup = BeautifulSoup(r.content, 'html.parser')
-        archivelist =  soup.find('div', class_="archivelist")
-        items = archivelist.findAll('article', class_="item")
-        logger.info(len(items))
-        for item in items:
-            review = {}
-            t = item.find('time')
-            if t:
-                published_date = t['datetime']
-            else:
-                published_date = None
-            logger.debug('published_date: %s' % published_date)
-            review['published_date'] = published_date
-            a = item.find('h2', class_='title').find('a')
-            if a:
-                book_review = a['href']
-            else:
-                book_review = None
-            logger.debug('review_link: %s' % book_review)
-            review['review_link'] = book_review
-            review['review_seamus_id'] = book_review.split('/')[6]
-            reviews.append(review)
-        return reviews, published_date
-    else:
-        return None, None
-
-@task
-def scrape_book_reviews():
-    """
-    Loads/reloads just the book data.
-    Does not save image files.
-    """
-    HEADER = ["published_date", "review_link", "review_seamus_id"]
-    logger.info("start scrape books")
-    reviews_url_tpl = 'http://www.npr.org/sections/book-reviews/archive?date=%s%s'
-    reviews = []
-    with open('data/book_reviews.csv', 'w') as fout:
-        writer = CSVKitDictWriter(fout, fieldnames=HEADER)
-        writer.writeheader()
-        for month in reversed(range(1, 13)):
-            # Initialize first iteration for the month
-            last_date = '2016-%s-31' % month
-            bits = last_date.split('-')
-            scrape_month = int(bits[1])
-            while scrape_month == month:
-                time.sleep(2)
-                new_date_suffix = '-%s-%s' % (bits[2], bits[0])
-                url = reviews_url_tpl % (scrape_month, new_date_suffix)
-                rows, last_date = _scrape_page(url)
-                if rows:
-                    reviews.extend(rows)
-                bits = last_date.split('-')
-                scrape_month = int(bits[1])
-                logger.info('last_date: %s' % last_date)
-        unique_reviews = [dict(t) for t in set([tuple(d.items()) for d in reviews])]
-        sorted_reviews = sorted(unique_reviews, key=lambda k: k['published_date'], reverse=True)
-        writer.writerows(sorted_reviews)
-
-
-    logger.info("end scrape books")

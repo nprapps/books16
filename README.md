@@ -9,6 +9,7 @@ Books Concierge (2016 version)
 * [Save media assets](#save-media-assets)
 * [Add a page to the site](#add-a-page-to-the-site)
 * [Run the project](#run-the-project)
+* [COPY configuration](#copy-configuration)
 * [COPY editing](#copy-editing)
 * [Load books and covers](#load-books-and-covers)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
@@ -128,6 +129,43 @@ fab app
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
+COPY configuration
+------------------
+
+This app uses a Google Spreadsheet for a simple key/value store that provides an editing workflow.
+
+To access the Google doc, you'll need to create a Google API project via the [Google developer console](http://console.developers.google.com).
+
+Enable the Drive API for your project and create a "web application" client ID.
+
+For the redirect URIs use:
+
+* `http://localhost:8000/authenticate/`
+* `http://127.0.0.1:8000/authenticate`
+* `http://localhost:8888/authenticate/`
+* `http://127.0.0.1:8888/authenticate`
+
+For the Javascript origins use:
+
+* `http://localhost:8000`
+* `http://127.0.0.1:8000`
+* `http://localhost:8888`
+* `http://127.0.0.1:8888`
+
+You'll also need to set some environment variables:
+
+```
+export GOOGLE_OAUTH_CLIENT_ID="something-something.apps.googleusercontent.com"
+export GOOGLE_OAUTH_CONSUMER_SECRET="bIgLonGStringOfCharacT3rs"
+export AUTHOMATIC_SALT="jAmOnYourKeyBoaRd"
+```
+
+Note that `AUTHOMATIC_SALT` can be set to any random string. It's just cryptographic salt for the authentication library we use.
+
+Once set up, run `fab app` and visit `http://localhost:8000` in your browser. If authentication is not configured, you'll be asked to allow the application for read-only access to Google drive, the account profile, and offline access on behalf of one of your Google accounts. This should be a one-time operation across all app-template projects.
+
+It is possible to grant access to other accounts on a per-project basis by changing `GOOGLE_OAUTH_CREDENTIALS_PATH` in `app_config.py`.
+
 COPY editing
 ------------
 
@@ -192,6 +230,16 @@ Load books and covers
 
 To run the app, you'll need to load books and covers from a Google Spreadsheet.
 First, see `DATA_GOOGLE_DOC_KEY` in `app_config.py`.
+
+View a [sample data spreadsheet](https://docs.google.com/spreadsheets/d/10XgwGi631PgWrKwMp_OcFnVa7m4v9LXfwTDB5aXNUDw/edit?usp=sharing)
+
+
+In order to get the covers for our books we are using an external service from BAKER & TAYLOR, in order to use it you will need your own credentials stored in these environment variables.
+
+```
+books16_BAKER_TAYLOR_USERID="SampleUser"
+books16_BAKER_TAYLOR_PASSWORD="SamplePassword"
+```
 
 Then run the loader:
 
