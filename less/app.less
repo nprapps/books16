@@ -12,15 +12,22 @@
 @yellow-light: #FFD34E;
 @yellow-dark: #DB9E36;
 
-@media screen and (max-width: 767px){
-  body.modal-open {
-      margin-right: 0;
-      // Fix for iOS safari scroll bug
-      // https://github.com/twbs/bootstrap/issues/14839
-      position: fixed;
-      width: 100%;
-      overflow: hidden;
-  }
+body.modal-open {
+    // Fix for iOS scroll bug
+    // https://github.com/twbs/bootstrap/issues/14839
+    &.touch {
+        margin-right: 0;
+        position: fixed;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    #myModal {
+        // Fix for iOS safari scroll bug
+        // https://github.com/twbs/bootstrap/issues/14839
+        -webkit-overflow-scrolling: auto !important;
+        overflow-y: auto !important;
+    }
 }
 
 nav, .col-md-12, header, footer {
@@ -1606,11 +1613,6 @@ footer {
     }
 
     #myModal {
-
-        // Fix for iOS safari scroll bug
-        // https://github.com/twbs/bootstrap/issues/14839
-        -webkit-overflow-scrolling: auto !important;
-        overflow-y: auto !important;
 
         .modal-dialog {
             width: 100%;
