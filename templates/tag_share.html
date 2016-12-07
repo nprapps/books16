@@ -3,12 +3,6 @@
 <head>
     <title>{{tag.title}}</title>
 
-    {% if not DEBUG %}
-    <script>
-    window.location = '{{ S3_BASE_URL }}/#/tag/{{ tag.key }}';
-    </script>
-    {% endif %}
-
     {# Twitter #}
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="{{ twitter_handle }}">
@@ -31,6 +25,12 @@
 
     {# Google News #}
     <meta name="thumbnail" content="{{ tag_thumb }}" />
+
+    {% if not DEBUG %}
+    <script>
+    window.location = '{{ S3_BASE_URL }}/#/tag/{{ tag.key }}';
+    </script>
+    {% endif %}
 </head>
 
 <body>
