@@ -621,8 +621,8 @@ $(function() {
 
 
 function checkOffset(){
+  var scrollBottom = $(document).height() - $(window).height() - $(window).scrollTop();
   if ($(window).width() <= 640){
-    var scrollBottom = $(document).height() - $(window).height() - $(window).scrollTop();;
 
     if (scrollBottom <= $('#footer').height() + 10){
        var spaceDiff = ($('#footer').height() + 10) - scrollBottom;
@@ -633,7 +633,7 @@ function checkOffset(){
   } else {
     $('#back-to-top').css({'bottom':'100'});
   }
-
+console.log('ROOM TO BOTTOM: ' + scrollBottom);
 }
 
 var onTouchStart = function(e) {
