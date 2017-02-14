@@ -222,7 +222,7 @@ def configure_targets(deployment_target):
         S3_BASE_URL = 'https://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
-        SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = 'https://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = False
         LOG_LEVEL = logging.ERROR
@@ -231,11 +231,11 @@ def configure_targets(deployment_target):
         secrets = get_secrets()
         S3_BUCKET = PRODUCTION_S3_BUCKET
         PROJECT_SLUG = '%s-%s' % (PROJECT_SLUG, secrets['RANDOM_SUFFIX'])
-        SHARE_URL = 'http://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
+        SHARE_URL = 'https://%s/%s/' % (PRODUCTION_S3_BUCKET, PROJECT_SLUG)
         S3_BASE_URL = 'https://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = PRODUCTION_SERVERS
-        SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = 'https://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = False
         LOG_LEVEL = logging.ERROR
@@ -245,7 +245,7 @@ def configure_targets(deployment_target):
         S3_BASE_URL = 'http://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         S3_DEPLOY_URL = 's3://%s/%s' % (S3_BUCKET, PROJECT_SLUG)
         SERVERS = STAGING_SERVERS
-        SERVER_BASE_URL = '//%s/%s' % (SERVERS[0], PROJECT_SLUG)
+        SERVER_BASE_URL = 'https://%s/%s' % (SERVERS[0], PROJECT_SLUG)
         SERVER_LOG_PATH = '/var/log/%s' % PROJECT_FILENAME
         DEBUG = False
         LOG_LEVEL = logging.INFO
