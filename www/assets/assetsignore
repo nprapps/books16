@@ -1,3 +1,7 @@
 .DS_Store
 .placeholder
 assetsignore
+img/.DS_Store
+cover/.DS_Store
+sponsorship/.DS_Store
+tag/.DS_Store
