@@ -5,8 +5,8 @@ var urls = [
 
 if (window.location.protocol == "https:") {
     urls = [
-        'https://secure.npr.org/templates/css/fonts/GothamSSm.css',
-        'https://secure.npr.org/templates/css/fonts/Gotham.css'
+        'https://s.npr.org/templates/css/fonts/GothamSSm.css',
+        'https://s.npr.org/templates/css/fonts/Gotham.css'
     ];
 }
 WebFont.load({
